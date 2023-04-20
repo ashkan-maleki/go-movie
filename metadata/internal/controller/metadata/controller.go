@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/mamalmaleki/go_movie/metadata/internal/repository"
-	model "github.com/mamalmaleki/go_movie/metadata/pkg"
+	"github.com/mamalmaleki/go_movie/metadata/pkg/model"
 )
 
 // ErrNotFound is returned when a requested record is not found.
