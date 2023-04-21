@@ -6,22 +6,37 @@ import (
 	"fmt"
 	"github.com/mamalmaleki/go_movie/metadata/pkg/model"
 	"github.com/mamalmaleki/go_movie/movie/internal/gateway"
+	"github.com/mamalmaleki/go_movie/pkg/discovery"
+	"log"
+	"math/rand"
 	"net/http"
 )
 
 // Gateway defines a movie metadata HTTP gateway
 type Gateway struct {
-	addr string
+	registry discovery.Registry
+	//addr string
 }
 
 // New creates a new HTTP gateway for a movie metadata service.
-func New(addr string) *Gateway {
-	return &Gateway{addr}
+func New(registry discovery.Registry) *Gateway {
+	return &Gateway{registry}
 }
+
+//func New(addr string) *Gateway {
+//	return &Gateway{addr}
+//}
 
 // Get gets movie metadata by a movie id.
 func (g *Gateway) Get(ctx context.Context, id string) (*model.Metadata, error) {
-	req, err := http.NewRequest(http.MethodGet, g.addr+"/metadata", nil)
+	address, err := g.registry.ServiceAddresses(ctx, "metadata")
+	if err != nil {
+		return nil, err
+	}
+	url := "http://" + address[rand.Intn(len(address))] + "/metadata"
+	log.Println("Calling metadata service. Request: GET " + url)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	//req, err := http.NewRequest(http.MethodGet, g.addr+"/metadata", nil)
 	if err != nil {
 		return nil, err
 	}
