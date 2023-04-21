@@ -1,0 +1,16 @@
+version: '3.7'
+services:
+  portainer:
+    image: portainer/portainer-ce
+
+  agent:
+    image: consul:latest
+
+
+volumes:
+  portainer_data:
+
+
+networks:
+  consul:
+    driver: bridge
