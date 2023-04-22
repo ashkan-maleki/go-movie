@@ -5,13 +5,17 @@ import (
 	"flag"
 	"fmt"
 	"github.com/mamalmaleki/go_movie/movie/internal/controller/movie"
-	metadataGatewayPkg "github.com/mamalmaleki/go_movie/movie/internal/gateway/metadata/http"
-	ratingGatewayPkg "github.com/mamalmaleki/go_movie/movie/internal/gateway/rating/http"
+	//metadataGatewayPkg "github.com/mamalmaleki/go_movie/movie/internal/gateway/metadata/http"
+	metadataGatewayPkg "github.com/mamalmaleki/go_movie/movie/internal/gateway/metadata/grpc"
+	ratingGatewayPkg "github.com/mamalmaleki/go_movie/movie/internal/gateway/rating/grpc"
+	//ratingGatewayPkg "github.com/mamalmaleki/go_movie/movie/internal/gateway/rating/http"
+	//grpcHandler "github.com/mamalmaleki/go_movie/movie/internal/handler/grpc"
+	"net/http"
+
 	httpHandler "github.com/mamalmaleki/go_movie/movie/internal/handler/http"
 	"github.com/mamalmaleki/go_movie/pkg/discovery"
 	"github.com/mamalmaleki/go_movie/pkg/discovery/consul"
 	"log"
-	"net/http"
 	"time"
 )
 
@@ -45,6 +49,19 @@ func main() {
 	metadataGateway := metadataGatewayPkg.New(registry)
 	ratingGateway := ratingGatewayPkg.New(registry)
 	ctrl := movie.New(ratingGateway, metadataGateway)
+
+	//h := grpcHandler.New(ctrl)
+	//lis, err := net.Listen("tcp", fmt.Sprintf("localhost:%d", port))
+	//if err != nil {
+	//	log.Fatalf("failed to listen: %v", err)
+	//}
+	//srv := grpc.NewServer()
+	//reflection.Register(srv)
+	//gen.RegisterMovieServiceServer(srv, h)
+	//if err := srv.Serve(lis); err != nil {
+	//	panic(err)
+	//}
+
 	h := httpHandler.New(ctrl)
 	http.Handle("/movie", http.HandlerFunc(h.GetMovieDetails))
 	if err := http.ListenAndServe(":8083", nil); err != nil {
