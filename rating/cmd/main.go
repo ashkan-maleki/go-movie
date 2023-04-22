@@ -4,13 +4,18 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"github.com/mamalmaleki/go_movie/gen"
 	"github.com/mamalmaleki/go_movie/pkg/discovery"
 	"github.com/mamalmaleki/go_movie/pkg/discovery/consul"
 	"github.com/mamalmaleki/go_movie/rating/internal/controller/rating"
-	httpHandler "github.com/mamalmaleki/go_movie/rating/internal/handler/http"
+	grpcHandler "github.com/mamalmaleki/go_movie/rating/internal/handler/grpc"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
+	"net"
+
+	//httpHandler "github.com/mamalmaleki/go_movie/rating/internal/handler/http"
 	"github.com/mamalmaleki/go_movie/rating/internal/repository/memory"
 	"log"
-	"net/http"
 	"time"
 )
 
@@ -42,9 +47,20 @@ func main() {
 	defer registry.Deregister(ctx, instanceID, serviceName)
 	repo := memory.New()
 	ctrl := rating.New(repo)
-	h := httpHandler.New(ctrl)
-	http.Handle("/rating", http.HandlerFunc(h.Handle))
-	if err := http.ListenAndServe(fmt.Sprintf(":%d", port), nil); err != nil {
+	h := grpcHandler.New(ctrl)
+	lis, err := net.Listen("tcp", fmt.Sprintf("localhost:%v", port))
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+	srv := grpc.NewServer()
+	reflection.Register(srv)
+	gen.RegisterRatingServiceServer(srv, h)
+	if err := srv.Serve(lis); err != nil {
 		panic(err)
 	}
+	//h := httpHandler.New(ctrl)
+	//http.Handle("/rating", http.HandlerFunc(h.Handle))
+	//if err := http.ListenAndServe(fmt.Sprintf(":%d", port), nil); err != nil {
+	//	panic(err)
+	//}
 }
