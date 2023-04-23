@@ -6,11 +6,12 @@ services:
   agent:
     image: consul:latest
 
+  zoo1:
+    image: confluentinc/cp-zookeeper:latest
+
+  kafka1:
+    image: confluentinc/cp-kafka:latest
 
 volumes:
   portainer_data:
 
-
-networks:
-  consul:
-    driver: bridge

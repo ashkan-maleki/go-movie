@@ -3,6 +3,7 @@ module github.com/mamalmaleki/go_movie
 go 1.20
 
 require (
+	github.com/confluentinc/confluent-kafka-go v1.9.2
 	github.com/hashicorp/consul/api v1.20.0
 	google.golang.org/grpc v1.54.0
 	google.golang.org/protobuf v1.30.0

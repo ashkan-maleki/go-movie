@@ -9,6 +9,7 @@ import (
 	"github.com/mamalmaleki/go_movie/pkg/discovery/consul"
 	"github.com/mamalmaleki/go_movie/rating/internal/controller/rating"
 	grpcHandler "github.com/mamalmaleki/go_movie/rating/internal/handler/grpc"
+	"github.com/mamalmaleki/go_movie/rating/internal/ingester/kafka"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"net"
@@ -45,8 +46,12 @@ func main() {
 		}
 	}()
 	defer registry.Deregister(ctx, instanceID, serviceName)
+	ingester, err := kafka.NewIngester("localhost", "my-group", "ratings")
+	if err != nil {
+		log.Fatalf("failed to create ingester: %v", err)
+	}
 	repo := memory.New()
-	ctrl := rating.New(repo)
+	ctrl := rating.New(repo, ingester)
 	h := grpcHandler.New(ctrl)
 	lis, err := net.Listen("tcp", fmt.Sprintf("localhost:%v", port))
 	if err != nil {
