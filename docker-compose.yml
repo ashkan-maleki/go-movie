@@ -12,6 +12,11 @@ services:
   kafka1:
     image: confluentinc/cp-kafka:latest
 
+  db:
+    image: mysql:latest
+
 volumes:
   portainer_data:
+  db:
+    driver: local
 
