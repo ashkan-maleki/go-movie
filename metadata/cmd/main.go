@@ -6,13 +6,14 @@ import (
 	"fmt"
 	"github.com/mamalmaleki/go_movie/gen"
 	"github.com/mamalmaleki/go_movie/metadata/internal/controller/metadata"
+	//"github.com/mamalmaleki/go_movie/metadata/internal/repository/memory"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"net"
 
 	//httpHandler "github.com/mamalmaleki/go_movie/metadata/internal/handler/http"
 	grpcHandler "github.com/mamalmaleki/go_movie/metadata/internal/handler/grpc"
-	"github.com/mamalmaleki/go_movie/metadata/internal/repository/memory"
+	"github.com/mamalmaleki/go_movie/metadata/internal/repository/mysql"
 	"github.com/mamalmaleki/go_movie/pkg/discovery"
 	"github.com/mamalmaleki/go_movie/pkg/discovery/consul"
 	"log"
@@ -45,7 +46,10 @@ func main() {
 		}
 	}()
 	defer registry.Deregister(ctx, instanceID, serviceName)
-	repo := memory.New()
+	repo, err := mysql.New()
+	if err != nil {
+		log.Fatalf("failed to connect to MySQL: %v", err)
+	}
 	ctrl := metadata.New(repo)
 	h := grpcHandler.New(ctrl)
 	lis, err := net.Listen("tcp", fmt.Sprintf("localhost:%v", port))
