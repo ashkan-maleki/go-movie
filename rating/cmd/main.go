@@ -15,7 +15,8 @@ import (
 	"net"
 
 	//httpHandler "github.com/mamalmaleki/go_movie/rating/internal/handler/http"
-	"github.com/mamalmaleki/go_movie/rating/internal/repository/memory"
+	//"github.com/mamalmaleki/go_movie/rating/internal/repository/memory"
+	"github.com/mamalmaleki/go_movie/rating/internal/repository/mysql"
 	"log"
 	"time"
 )
@@ -50,7 +51,10 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to create ingester: %v", err)
 	}
-	repo := memory.New()
+	repo, err := mysql.New()
+	if err != nil {
+		log.Fatalf("failed to connect to MySQL: %v", err)
+	}
 	ctrl := rating.New(repo, ingester)
 	h := grpcHandler.New(ctrl)
 	lis, err := net.Listen("tcp", fmt.Sprintf("localhost:%v", port))
