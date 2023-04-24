@@ -9,12 +9,14 @@ import (
 	"github.com/mamalmaleki/go_movie/pkg/discovery/consul"
 	"github.com/mamalmaleki/go_movie/rating/internal/controller/rating"
 	grpcHandler "github.com/mamalmaleki/go_movie/rating/internal/handler/grpc"
+	"github.com/mamalmaleki/go_movie/rating/internal/ingester/kafka"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"net"
 
 	//httpHandler "github.com/mamalmaleki/go_movie/rating/internal/handler/http"
-	"github.com/mamalmaleki/go_movie/rating/internal/repository/memory"
+	//"github.com/mamalmaleki/go_movie/rating/internal/repository/memory"
+	"github.com/mamalmaleki/go_movie/rating/internal/repository/mysql"
 	"log"
 	"time"
 )
@@ -45,8 +47,15 @@ func main() {
 		}
 	}()
 	defer registry.Deregister(ctx, instanceID, serviceName)
-	repo := memory.New()
-	ctrl := rating.New(repo)
+	ingester, err := kafka.NewIngester("localhost", "my-group", "ratings")
+	if err != nil {
+		log.Fatalf("failed to create ingester: %v", err)
+	}
+	repo, err := mysql.New()
+	if err != nil {
+		log.Fatalf("failed to connect to MySQL: %v", err)
+	}
+	ctrl := rating.New(repo, ingester)
 	h := grpcHandler.New(ctrl)
 	lis, err := net.Listen("tcp", fmt.Sprintf("localhost:%v", port))
 	if err != nil {
