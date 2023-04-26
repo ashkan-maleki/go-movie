@@ -2,10 +2,12 @@ package main
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"github.com/mamalmaleki/go_movie/gen"
 	"github.com/mamalmaleki/go_movie/metadata/internal/controller/metadata"
+	"gopkg.in/yaml.v3"
+	"os"
+
 	//"github.com/mamalmaleki/go_movie/metadata/internal/repository/memory"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -23,9 +25,19 @@ import (
 const serviceName = "metadata"
 
 func main() {
-	var port int
-	flag.IntVar(&port, "port", 8081, "API handler port")
-	flag.Parse()
+	log.Println("Starting the movie metadata service")
+	f, err := os.Open("base.yaml")
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	var cfg config
+	if err := yaml.NewDecoder(f).Decode(&cfg); err != nil {
+		panic(err)
+	}
+	port := cfg.API.Port
+	//flag.IntVar(&port, "port", 8081, "API handler port")
+	//flag.Parse()
 	log.Printf("Starting the movie metadata service on port %d", port)
 	registry, err := consul.NewRegistry("localhost:8500")
 	if err != nil {
