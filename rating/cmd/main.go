@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"github.com/mamalmaleki/go_movie/gen"
 	"github.com/mamalmaleki/go_movie/pkg/discovery"
@@ -12,7 +11,9 @@ import (
 	"github.com/mamalmaleki/go_movie/rating/internal/ingester/kafka"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
+	"gopkg.in/yaml.v3"
 	"net"
+	"os"
 
 	//httpHandler "github.com/mamalmaleki/go_movie/rating/internal/handler/http"
 	//"github.com/mamalmaleki/go_movie/rating/internal/repository/memory"
@@ -24,9 +25,17 @@ import (
 const serviceName = "rating"
 
 func main() {
-	var port int
-	flag.IntVar(&port, "port", 8082, "API handler port")
-	flag.Parse()
+	f, err := os.Open("base.yaml")
+	if err != nil {
+		panic(err)
+	}
+	var cfg config
+	if err := yaml.NewDecoder(f).Decode(&cfg); err != nil {
+		panic(err)
+	}
+	port := cfg.API.Port
+	//flag.IntVar(&port, "port", 8082, "API handler port")
+	//flag.Parse()
 	log.Printf("Starting the movie metadata service on port %d", port)
 	registry, err := consul.NewRegistry("localhost:8500")
 	if err != nil {
