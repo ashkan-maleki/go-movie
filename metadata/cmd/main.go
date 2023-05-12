@@ -26,7 +26,11 @@ const serviceName = "metadata"
 
 func main() {
 	log.Println("Starting the movie metadata service")
-	f, err := os.Open("base.yaml")
+	filename := os.Getenv("CONFIG_FILE")
+	if filename == "" {
+		filename = "./movie/configs/base.yaml"
+	}
+	f, err := os.Open(filename)
 	if err != nil {
 		panic(err)
 	}
@@ -39,7 +43,11 @@ func main() {
 	//flag.IntVar(&port, "port", 8081, "API handler port")
 	//flag.Parse()
 	log.Printf("Starting the movie metadata service on port %d", port)
-	registry, err := consul.NewRegistry("localhost:8500")
+	serviceDiscoverUrl := os.Getenv("SERVICE_DISCOVERY_URL")
+	if serviceDiscoverUrl == "" {
+		serviceDiscoverUrl = "localhost:8500"
+	}
+	registry, err := consul.NewRegistry(serviceDiscoverUrl)
 	if err != nil {
 		panic(err)
 	}

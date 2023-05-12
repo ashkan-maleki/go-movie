@@ -15,6 +15,9 @@ services:
   db:
     image: mysql:latest
 
+  metadata:
+    image: metadata
+
 volumes:
   portainer_data:
   db:

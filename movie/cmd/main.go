@@ -27,8 +27,14 @@ func main() {
 	//var port int
 	//flag.IntVar(&port, "port", 8083, "API handler port")
 	//flag.Parse()
-	f, err := os.Open("base.yaml")
+	filename := os.Getenv("CONFIG_FILE")
+	if filename == "" {
+		filename = "./movie/configs/base.yaml"
+		//filename = "./base.yaml"
+	}
+	f, err := os.Open(filename)
 	if err != nil {
+		fmt.Println(filename)
 		panic(err)
 	}
 	var cfg config

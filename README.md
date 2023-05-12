@@ -25,3 +25,5 @@ docker exec -i db mysql movie -h localhost -P 3306 --protocol=tcp -uroot -pmauFJ
 grpcurl -plaintext -d '{"record_id":"1", "record_type":"movie"}' localhost:8082 RatingService/GetAggregatedRating
 
 grpcurl -plaintext -d '{"record_id":"1", "record_type":"movie", "user_id": "alex", "rating_value": 5}' localhost:8082 RatingService/PutRating
+
+## docker run commands:

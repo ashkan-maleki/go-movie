@@ -66,6 +66,34 @@ services:
       - db:/var/lib/mysql
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
 
+  metadata:
+    container_name: metadata
+    hostname: metadata
+    image: metadata
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        service: metadata
+    expose:
+      - '8081'
+    environment:
+      ENVIRONMENT: development
+      CONFIG_FILE: "movie/base.yaml"
+      SERVICE_DISCOVERY_URL: "localhost:8500"
+#      RPC_SERVICES: 'STORES=stores:9000,CUSTOMERS=customers:9000'
+#      PG_CONN: host=postgres dbname=baskets user=baskets_user password=baskets_pass search_path=baskets,public
+#      NATS_URL: nats:4222
+#      OTEL_SERVICE_NAME: baskets
+#      OTEL_EXPORTER_OTLP_ENDPOINT: http://collector:4317
+    depends_on:
+      - db
+      - agent
+      - zoo1
+      - kafka1
+#    command: [ "ls", "movie" ]
+    command: [ "/movie/service" ]
+#    profiles: [ microservices ]
 
 
 
