@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"github.com/mamalmaleki/go_movie/gen"
 	"github.com/mamalmaleki/go_movie/pkg/discovery"
@@ -12,7 +11,9 @@ import (
 	"github.com/mamalmaleki/go_movie/rating/internal/ingester/kafka"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
+	"gopkg.in/yaml.v3"
 	"net"
+	"os"
 
 	//httpHandler "github.com/mamalmaleki/go_movie/rating/internal/handler/http"
 	//"github.com/mamalmaleki/go_movie/rating/internal/repository/memory"
@@ -24,11 +25,28 @@ import (
 const serviceName = "rating"
 
 func main() {
-	var port int
-	flag.IntVar(&port, "port", 8082, "API handler port")
-	flag.Parse()
+	log.Println("Starting the movie rating service")
+	filename := os.Getenv("CONFIG_FILE")
+	if filename == "" {
+		filename = "./rating/configs/base.yaml"
+	}
+	f, err := os.Open(filename)
+	if err != nil {
+		panic(err)
+	}
+	var cfg config
+	if err := yaml.NewDecoder(f).Decode(&cfg); err != nil {
+		panic(err)
+	}
+	port := cfg.API.Port
+	//flag.IntVar(&port, "port", 8082, "API handler port")
+	//flag.Parse()
 	log.Printf("Starting the movie metadata service on port %d", port)
-	registry, err := consul.NewRegistry("localhost:8500")
+	serviceDiscoverUrl := os.Getenv("SERVICE_DISCOVERY_URL")
+	if serviceDiscoverUrl == "" {
+		serviceDiscoverUrl = "localhost:8500"
+	}
+	registry, err := consul.NewRegistry(serviceDiscoverUrl)
 	if err != nil {
 		panic(err)
 	}
@@ -47,7 +65,12 @@ func main() {
 		}
 	}()
 	defer registry.Deregister(ctx, instanceID, serviceName)
-	ingester, err := kafka.NewIngester("localhost", "my-group", "ratings")
+
+	kafkaAddress := os.Getenv("KAFKA_ADDRESS")
+	if kafkaAddress == "" {
+		kafkaAddress = "localhost"
+	}
+	ingester, err := kafka.NewIngester(kafkaAddress, "my-group", "ratings")
 	if err != nil {
 		log.Fatalf("failed to create ingester: %v", err)
 	}
