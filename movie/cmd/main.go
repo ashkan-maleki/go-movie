@@ -24,17 +24,13 @@ import (
 const serviceName = "movie"
 
 func main() {
-	//var port int
-	//flag.IntVar(&port, "port", 8083, "API handler port")
-	//flag.Parse()
+	log.Println("Starting the movie gateway service")
 	filename := os.Getenv("CONFIG_FILE")
 	if filename == "" {
 		filename = "./movie/configs/base.yaml"
-		//filename = "./base.yaml"
 	}
 	f, err := os.Open(filename)
 	if err != nil {
-		fmt.Println(filename)
 		panic(err)
 	}
 	var cfg config
@@ -43,7 +39,11 @@ func main() {
 	}
 	port := cfg.API.Port
 	log.Printf("Starting the movie metadata service on port %d", port)
-	registry, err := consul.NewRegistry("localhost:8500")
+	serviceDiscoverUrl := os.Getenv("SERVICE_DISCOVERY_URL")
+	if serviceDiscoverUrl == "" {
+		serviceDiscoverUrl = "localhost:8500"
+	}
+	registry, err := consul.NewRegistry(serviceDiscoverUrl)
 	if err != nil {
 		panic(err)
 	}

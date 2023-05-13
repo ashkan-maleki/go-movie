@@ -28,7 +28,7 @@ func main() {
 	log.Println("Starting the movie metadata service")
 	filename := os.Getenv("CONFIG_FILE")
 	if filename == "" {
-		filename = "./movie/configs/base.yaml"
+		filename = "./metadata/configs/base.yaml"
 	}
 	f, err := os.Open(filename)
 	if err != nil {

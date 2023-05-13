@@ -25,7 +25,12 @@ import (
 const serviceName = "rating"
 
 func main() {
-	f, err := os.Open("base.yaml")
+	log.Println("Starting the movie rating service")
+	filename := os.Getenv("CONFIG_FILE")
+	if filename == "" {
+		filename = "./rating/configs/base.yaml"
+	}
+	f, err := os.Open(filename)
 	if err != nil {
 		panic(err)
 	}
@@ -37,7 +42,11 @@ func main() {
 	//flag.IntVar(&port, "port", 8082, "API handler port")
 	//flag.Parse()
 	log.Printf("Starting the movie metadata service on port %d", port)
-	registry, err := consul.NewRegistry("localhost:8500")
+	serviceDiscoverUrl := os.Getenv("SERVICE_DISCOVERY_URL")
+	if serviceDiscoverUrl == "" {
+		serviceDiscoverUrl = "localhost:8500"
+	}
+	registry, err := consul.NewRegistry(serviceDiscoverUrl)
 	if err != nil {
 		panic(err)
 	}
@@ -56,7 +65,12 @@ func main() {
 		}
 	}()
 	defer registry.Deregister(ctx, instanceID, serviceName)
-	ingester, err := kafka.NewIngester("localhost", "my-group", "ratings")
+
+	kafkaAddress := os.Getenv("KAFKA_ADDRESS")
+	if kafkaAddress == "" {
+		kafkaAddress = "localhost"
+	}
+	ingester, err := kafka.NewIngester(kafkaAddress, "my-group", "ratings")
 	if err != nil {
 		log.Fatalf("failed to create ingester: %v", err)
 	}

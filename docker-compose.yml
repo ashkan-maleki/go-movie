@@ -18,6 +18,12 @@ services:
   metadata:
     image: metadata
 
+  movie:
+    image: movie
+
+  rating:
+    image: rating
+
 volumes:
   portainer_data:
   db:
