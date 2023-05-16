@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/mamalmaleki/go_movie/gen"
 	"github.com/mamalmaleki/go_movie/pkg/discovery/memory"
 	"google.golang.org/grpc"
@@ -57,6 +59,26 @@ func main() {
 	movieClient := gen.NewMovieServiceClient(movieConnection)
 
 	log.Println("Saving test metadata via metadata service")
+	m := &gen.Metadata{
+		Id:          "the-movie",
+		Title:       "The Movie",
+		Description: "The Movie, the one and only",
+		Director:    "Mr. D",
+	}
+	if _, err := metadataClient.PutMetadata(ctx, &gen.PutMetadataRequest{Metadata: m}); err != nil {
+		log.Fatalf("put metadata: %v", err)
+	}
+
+	log.Println("Retrieving test metadata via metadata service")
+	getMetadataResponse, err := metadataClient.GetMetadata(ctx,
+		&gen.GetMetadataRequest{MovieId: m.Id})
+	if err != nil {
+		log.Fatalf("get metadata: %v", err)
+	}
+	if diff := cmp.Diff(getMetadataResponse.Metadata, m,
+		cmpopts.IgnoreUnexported(gen.Metadata{})); diff != "" {
+		log.Fatalf("get metadata after put mismatch: %v", diff)
+	}
 }
 
 func startMetadataService(ctx context.Context, registry *memory.Registry) *grpc.Server {
