@@ -7,6 +7,7 @@ require (
 	github.com/confluentinc/confluent-kafka-go/v2 v2.1.1
 	github.com/go-sql-driver/mysql v1.7.0
 	github.com/golang/mock v1.6.0
+	github.com/google/go-cmp v0.5.9
 	github.com/hashicorp/consul/api v1.20.0
 	github.com/magiconair/properties v1.8.6
 	google.golang.org/grpc v1.54.0
