@@ -6,12 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="8068eeb8-9d21-46a2-987a-9bf7e065f2e6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/metadata/internal/controller/metadata/controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/metadata/internal/controller/metadata/controller.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/metadata/internal/handler/grpc/grpc.go" beforeDir="false" afterPath="$PROJECT_DIR$/metadata/internal/handler/grpc/grpc.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/movie/internal/controller/movie/controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/movie/internal/controller/movie/controller.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/movie/internal/gateway/rating/grpc/rating.go" beforeDir="false" afterPath="$PROJECT_DIR$/movie/internal/gateway/rating/grpc/rating.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/movie/internal/handler/grpc/grpc.go" beforeDir="false" afterPath="$PROJECT_DIR$/movie/internal/handler/grpc/grpc.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,23 +34,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
-    &quot;Git.Branch.Popup.ShowAllRemotes&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
-    &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/media/johnny/New Volume4/learn/go/src/udemy_concurrency&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultGoTemplateProperty": "Go File",
+    "Git.Branch.Popup.ShowAllRemotes": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.go.formatter.settings.were.checked": "true",
+    "RunOnceActivity.go.migrated.go.modules.settings": "true",
+    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "go.import.settings.migrated": "true",
+    "go.sdk.automatically.set": "true",
+    "last_opened_file_path": "/media/johnny/New Volume5/learn/go/src/go_movie",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/rating" />

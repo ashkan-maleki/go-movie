@@ -31,3 +31,13 @@ func (g *Gateway) Get(ctx context.Context, id string) (*model.Metadata, error) {
 	}
 	return model.MetadataFromProto(resp.Metadata), nil
 }
+
+//func shouldRetry(err error) bool {
+//	e, ok := status.FromError(err)
+//	if !ok {
+//		return false
+//	}
+//	return e.Code() == codes.DeadlineExceeded ||
+//		e.Code() == codes.ResourceExhausted ||
+//		e.Code() == codes.Unavailable
+//}
