@@ -6,6 +6,8 @@ import (
 	"github.com/mamalmaleki/go_movie/internal/grpcutil"
 	"github.com/mamalmaleki/go_movie/metadata/pkg/model"
 	"github.com/mamalmaleki/go_movie/pkg/discovery"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // Gateway defines a movie metadata gRPC gateway.
@@ -32,12 +34,12 @@ func (g *Gateway) Get(ctx context.Context, id string) (*model.Metadata, error) {
 	return model.MetadataFromProto(resp.Metadata), nil
 }
 
-//func shouldRetry(err error) bool {
-//	e, ok := status.FromError(err)
-//	if !ok {
-//		return false
-//	}
-//	return e.Code() == codes.DeadlineExceeded ||
-//		e.Code() == codes.ResourceExhausted ||
-//		e.Code() == codes.Unavailable
-//}
+func shouldRetry(err error) bool {
+	e, ok := status.FromError(err)
+	if !ok {
+		return false
+	}
+	return e.Code() == codes.DeadlineExceeded ||
+		e.Code() == codes.ResourceExhausted ||
+		e.Code() == codes.Unavailable
+}
