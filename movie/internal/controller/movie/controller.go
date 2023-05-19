@@ -49,8 +49,8 @@ func (c *Controller) Get(ctx context.Context, id string) (*model.MovieDetails, e
 		// Just proceed in this case, it's ok not to have ratings yet.
 	} else if err != nil {
 		return nil, err
-	} else {
-		details.Rating = &rating
 	}
+
+	details.Rating = &rating
 	return details, nil
 }

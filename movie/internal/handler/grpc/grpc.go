@@ -3,7 +3,6 @@ package grpc
 import (
 	"context"
 	"errors"
-
 	"github.com/mamalmaleki/go_movie/gen"
 	"github.com/mamalmaleki/go_movie/metadata/pkg/model"
 	"github.com/mamalmaleki/go_movie/movie/internal/controller/movie"
@@ -22,7 +21,7 @@ func New(ctrl *movie.Controller) *Handler {
 	return &Handler{ctrl: ctrl}
 }
 
-// GetMovieDetails returns moviie details by id.
+// GetMovieDetails returns movie details by id.
 func (h *Handler) GetMovieDetails(ctx context.Context,
 	req *gen.GetMovieDetailsRequest) (*gen.GetMovieDetailsResponse, error) {
 	if req == nil || req.MovieId == "" {

@@ -18,6 +18,7 @@ import (
 	"github.com/mamalmaleki/go_movie/metadata/internal/repository/mysql"
 	"github.com/mamalmaleki/go_movie/pkg/discovery"
 	"github.com/mamalmaleki/go_movie/pkg/discovery/consul"
+	"go.uber.org/zap"
 	"log"
 	"time"
 )
@@ -25,6 +26,9 @@ import (
 const serviceName = "metadata"
 
 func main() {
+	logger, _ := zap.NewProduction()
+	logger.Info("Started the service", zap.String("serviceName", "metadata"))
+
 	log.Println("Starting the movie metadata service")
 	filename := os.Getenv("CONFIG_FILE")
 	if filename == "" {
