@@ -3,18 +3,21 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/grpc-ecosystem/go-grpc-middleware/ratelimit"
+	"github.com/mamalmaleki/go_movie/gen"
 	"github.com/mamalmaleki/go_movie/movie/internal/controller/movie"
+	grpcHandler "github.com/mamalmaleki/go_movie/movie/internal/handler/grpc"
+	"golang.org/x/time/rate"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 	"gopkg.in/yaml.v3"
+	"net"
 	"os"
 
 	//metadataGatewayPkg "github.com/mamalmaleki/go_movie/movie/internal/gateway/metadata/http"
 	metadataGatewayPkg "github.com/mamalmaleki/go_movie/movie/internal/gateway/metadata/grpc"
 	ratingGatewayPkg "github.com/mamalmaleki/go_movie/movie/internal/gateway/rating/grpc"
-	//ratingGatewayPkg "github.com/mamalmaleki/go_movie/movie/internal/gateway/rating/http"
-	//grpcHandler "github.com/mamalmaleki/go_movie/movie/internal/handler/grpc"
-	"net/http"
 
-	httpHandler "github.com/mamalmaleki/go_movie/movie/internal/handler/http"
 	"github.com/mamalmaleki/go_movie/pkg/discovery"
 	"github.com/mamalmaleki/go_movie/pkg/discovery/consul"
 	"log"
@@ -67,21 +70,36 @@ func main() {
 	ratingGateway := ratingGatewayPkg.New(registry)
 	ctrl := movie.New(ratingGateway, metadataGateway)
 
-	//h := grpcHandler.New(ctrl)
-	//lis, err := net.Listen("tcp", fmt.Sprintf("localhost:%d", port))
-	//if err != nil {
-	//	log.Fatalf("failed to listen: %v", err)
-	//}
-	//srv := grpc.NewServer()
-	//reflection.Register(srv)
-	//gen.RegisterMovieServiceServer(srv, h)
-	//if err := srv.Serve(lis); err != nil {
-	//	panic(err)
-	//}
-
-	h := httpHandler.New(ctrl)
-	http.Handle("/movie", http.HandlerFunc(h.GetMovieDetails))
-	if err := http.ListenAndServe(fmt.Sprintf(":%v", port), nil); err != nil {
+	h := grpcHandler.New(ctrl)
+	lis, err := net.Listen("tcp", fmt.Sprintf("localhost:%d", port))
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+	const limit = 100
+	const burst = 100
+	l := newLimiter(limit, burst)
+	srv := grpc.NewServer(grpc.UnaryInterceptor(ratelimit.UnaryServerInterceptor(l)))
+	reflection.Register(srv)
+	gen.RegisterMovieServiceServer(srv, h)
+	if err := srv.Serve(lis); err != nil {
 		panic(err)
 	}
+
+	//h := httpHandler.New(ctrl)
+	//http.Handle("/movie", http.HandlerFunc(h.GetMovieDetails))
+	//if err := http.ListenAndServe(fmt.Sprintf(":%v", port), nil); err != nil {
+	//	panic(err)
+	//}
+}
+
+type limiter struct {
+	l *rate.Limiter
+}
+
+func newLimiter(limit int, burst int) *limiter {
+	return &limiter{rate.NewLimiter(rate.Limit(limit), burst)}
+}
+
+func (l *limiter) Limit() bool {
+	return l.l.Allow()
 }
