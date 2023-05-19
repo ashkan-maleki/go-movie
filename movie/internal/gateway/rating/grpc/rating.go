@@ -4,8 +4,11 @@ import (
 	"context"
 	"github.com/mamalmaleki/go_movie/gen"
 	"github.com/mamalmaleki/go_movie/internal/grpcutil"
+	"github.com/mamalmaleki/go_movie/movie/internal/gateway"
 	"github.com/mamalmaleki/go_movie/pkg/discovery"
 	"github.com/mamalmaleki/go_movie/rating/pkg/model"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // Gateway defines an gRPC gateway for a rating service.
@@ -31,7 +34,10 @@ func (g *Gateway) GetAggregatedRating(ctx context.Context, recordID model.Record
 	resp, err := client.GetAggregatedRating(ctx,
 		&gen.GetAggregatedRatingRequest{RecordId: string(recordID),
 			RecordType: string(recordType)})
-	if err != nil {
+	stat, ok := status.FromError(err)
+	if ok && stat.Code() == codes.NotFound {
+		return 0, gateway.ErrNotFound
+	} else if err != nil {
 		return 0, err
 	}
 	return resp.RatingValue, nil

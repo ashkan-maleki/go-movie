@@ -14,6 +14,10 @@ import (
 	"gopkg.in/yaml.v3"
 	"net"
 	"os"
+	"os/signal"
+	"path/filepath"
+	"sync"
+	"syscall"
 
 	//httpHandler "github.com/mamalmaleki/go_movie/rating/internal/handler/http"
 	//"github.com/mamalmaleki/go_movie/rating/internal/repository/memory"
@@ -28,7 +32,10 @@ func main() {
 	log.Println("Starting the movie rating service")
 	filename := os.Getenv("CONFIG_FILE")
 	if filename == "" {
-		filename = "./rating/configs/base.yaml"
+		//filename = "../configs/base.yaml"
+		//filename = "./rating/configs/base.yaml"
+		//filename, _ = os.Getwd()
+		filename, _ = filepath.Abs("../rating/configs/base.yaml")
 	}
 	f, err := os.Open(filename)
 	if err != nil {
@@ -50,7 +57,8 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	ctx := context.Background()
+	//ctx := context.Background()
+	ctx, cancel := context.WithCancel(context.Background())
 	instanceID := discovery.GenerateInstanceID(serviceName)
 	if err := registry.Register(ctx, instanceID, serviceName,
 		fmt.Sprintf("localhost:%d", port)); err != nil {
@@ -87,9 +95,25 @@ func main() {
 	srv := grpc.NewServer()
 	reflection.Register(srv)
 	gen.RegisterRatingServiceServer(srv, h)
+
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
+	var wg sync.WaitGroup
+	wg.Add(1)
+
+	go func() {
+		defer wg.Done()
+		s := <-sigChan
+		cancel()
+		log.Printf("Received signal %v, attemting graceful shutdown", s)
+		srv.GracefulStop()
+		log.Println("Gracefully stopped the gRPC server")
+	}()
+
 	if err := srv.Serve(lis); err != nil {
 		panic(err)
 	}
+	wg.Wait()
 	//h := httpHandler.New(ctrl)
 	//http.Handle("/rating", http.HandlerFunc(h.Handle))
 	//if err := http.ListenAndServe(fmt.Sprintf(":%d", port), nil); err != nil {

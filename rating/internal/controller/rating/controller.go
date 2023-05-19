@@ -3,7 +3,6 @@ package rating
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/mamalmaleki/go_movie/rating/internal/repository"
 	"github.com/mamalmaleki/go_movie/rating/pkg/model"
 )
@@ -53,7 +52,6 @@ func (c *Controller) GetAggregatedRating(ctx context.Context, recordID model.Rec
 // PutRating writes a rating for given record.
 func (c *Controller) PutRating(ctx context.Context, recordID model.RecordID,
 	recordType model.RecordType, rating *model.Rating) error {
-	fmt.Println(recordID, recordType, rating)
 	return c.repo.Put(ctx, recordID, recordType, rating)
 }
 
