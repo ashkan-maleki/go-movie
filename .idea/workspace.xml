@@ -4,16 +4,7 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8068eeb8-9d21-46a2-987a-9bf7e065f2e6" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/metadata/cmd/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/metadata/cmd/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/movie/cmd/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/movie/cmd/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/movie/internal/gateway/metadata/grpc/metadata.go" beforeDir="false" afterPath="$PROJECT_DIR$/movie/internal/gateway/metadata/grpc/metadata.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rating/cmd/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/rating/cmd/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/todo.go" beforeDir="false" afterPath="$PROJECT_DIR$/todo.js" afterDir="false" />
-    </list>
+    <list default="true" id="8068eeb8-9d21-46a2-987a-9bf7e065f2e6" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
