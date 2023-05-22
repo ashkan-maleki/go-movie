@@ -35,7 +35,11 @@ func main() {
 		//filename = "../configs/base.yaml"
 		//filename = "./rating/configs/base.yaml"
 		//filename, _ = os.Getwd()
-		filename, _ = filepath.Abs("../rating/configs/base.yaml")
+		var err error
+		filename, err = filepath.Abs("../rating/configs/base.yaml")
+		if err != nil {
+			panic(err)
+		}
 	}
 	f, err := os.Open(filename)
 	if err != nil {

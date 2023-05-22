@@ -7,6 +7,7 @@ import (
 	"github.com/mamalmaleki/go_movie/metadata/internal/controller/metadata"
 	"gopkg.in/yaml.v3"
 	"os"
+	"path/filepath"
 
 	//"github.com/mamalmaleki/go_movie/metadata/internal/repository/memory"
 	"google.golang.org/grpc"
@@ -32,7 +33,11 @@ func main() {
 	log.Println("Starting the movie metadata service")
 	filename := os.Getenv("CONFIG_FILE")
 	if filename == "" {
-		filename = "./metadata/configs/base.yaml"
+		var err error
+		filename, err = filepath.Abs("../metadata/configs/base.yaml")
+		if err != nil {
+			panic(err)
+		}
 	}
 	f, err := os.Open(filename)
 	if err != nil {
