@@ -6,9 +6,13 @@ import (
 	"github.com/mamalmaleki/go_movie/gen"
 	"github.com/mamalmaleki/go_movie/pkg/discovery"
 	"github.com/mamalmaleki/go_movie/pkg/discovery/consul"
+	"github.com/mamalmaleki/go_movie/pkg/tracing"
 	"github.com/mamalmaleki/go_movie/rating/internal/controller/rating"
 	grpcHandler "github.com/mamalmaleki/go_movie/rating/internal/handler/grpc"
 	"github.com/mamalmaleki/go_movie/rating/internal/ingester/kafka"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/propagation"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"gopkg.in/yaml.v3"
@@ -53,6 +57,20 @@ func main() {
 	//flag.IntVar(&port, "port", 8082, "API handler port")
 	//flag.Parse()
 	log.Printf("Starting the movie metadata service on port %d", port)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	tp, err := tracing.NewJaegerProvider(cfg.Jaeger.URL, serviceName)
+	if err != nil {
+		log.Fatal("Failed to initialize Jaeger provider", zap.Error(err))
+	}
+	defer func() {
+		if err := tp.Shutdown(ctx); err != nil {
+			log.Fatal("Failed to shut down Jaeger provider", zap.Error(err))
+		}
+	}()
+
 	serviceDiscoverUrl := os.Getenv("SERVICE_DISCOVERY_URL")
 	if serviceDiscoverUrl == "" {
 		serviceDiscoverUrl = "localhost:8500"
@@ -61,8 +79,10 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	//ctx := context.Background()
-	ctx, cancel := context.WithCancel(context.Background())
+
+	otel.SetTracerProvider(tp)
+	otel.SetTextMapPropagator(propagation.TraceContext{})
+
 	instanceID := discovery.GenerateInstanceID(serviceName)
 	if err := registry.Register(ctx, instanceID, serviceName,
 		fmt.Sprintf("localhost:%d", port)); err != nil {
