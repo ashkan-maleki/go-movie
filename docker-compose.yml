@@ -18,6 +18,9 @@ services:
   metadata:
     image: metadata
 
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+
   movie:
     image: movie
 

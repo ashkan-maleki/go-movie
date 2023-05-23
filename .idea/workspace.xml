@@ -5,11 +5,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8068eeb8-9d21-46a2-987a-9bf7e065f2e6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/pkg/tracing/tracing.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.override.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.override.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/grpcutil/grpcutil.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/grpcutil/grpcutil.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/metadata/cmd/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/metadata/cmd/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/metadata/cmd/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/metadata/cmd/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/metadata/configs/base.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/metadata/configs/base.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/metadata/internal/repository/memory/memory.go" beforeDir="false" afterPath="$PROJECT_DIR$/metadata/internal/repository/memory/memory.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/metadata/internal/repository/mysql/mysql.go" beforeDir="false" afterPath="$PROJECT_DIR$/metadata/internal/repository/mysql/mysql.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/movie/cmd/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/movie/cmd/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/movie/cmd/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/movie/cmd/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/movie/configs/base.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/movie/configs/base.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rating/cmd/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/rating/cmd/config.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/rating/cmd/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/rating/cmd/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rating/configs/base.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/rating/configs/base.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/todo.js" beforeDir="false" afterPath="$PROJECT_DIR$/todo.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,23 +52,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
-    &quot;Git.Branch.Popup.ShowAllRemotes&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
-    &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/media/johnny/New Volume6/learn/go/src/udemy_concurrency&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultGoTemplateProperty": "Go File",
+    "Git.Branch.Popup.ShowAllRemotes": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.go.formatter.settings.were.checked": "true",
+    "RunOnceActivity.go.migrated.go.modules.settings": "true",
+    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "go.import.settings.migrated": "true",
+    "go.sdk.automatically.set": "true",
+    "last_opened_file_path": "/media/johnny/New Volume7/learn/go/src/go_movie",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/rating" />
@@ -67,25 +81,6 @@
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/docker" />
     </key>
-  </component>
-  <component name="RunManager">
-    <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
-      <module name="go_movie" />
-      <working_directory value="$PROJECT_DIR$" />
-      <kind value="FILE" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$" />
-      <method v="2" />
-    </configuration>
-    <configuration default="true" type="GoTestRunConfiguration" factoryName="Go Test">
-      <module name="go_movie" />
-      <working_directory value="$PROJECT_DIR$" />
-      <kind value="DIRECTORY" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$" />
-      <framework value="gotest" />
-      <method v="2" />
-    </configuration>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TypeScriptGeneratedFilesManager">

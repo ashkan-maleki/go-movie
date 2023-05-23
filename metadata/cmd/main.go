@@ -5,7 +5,14 @@ import (
 	"fmt"
 	"github.com/mamalmaleki/go_movie/gen"
 	"github.com/mamalmaleki/go_movie/metadata/internal/controller/metadata"
+	"github.com/mamalmaleki/go_movie/pkg/tracing"
+	"github.com/uber-go/tally"
+	"github.com/uber-go/tally/prometheus"
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/propagation"
 	"gopkg.in/yaml.v3"
+	"net/http"
 	"os"
 	"path/filepath"
 
@@ -28,7 +35,7 @@ const serviceName = "metadata"
 
 func main() {
 	logger, _ := zap.NewProduction()
-	logger.Info("Started the service", zap.String("serviceName", "metadata"))
+	logger.Info("Started the service", zap.String("serviceName", serviceName))
 
 	log.Println("Starting the movie metadata service")
 	filename := os.Getenv("CONFIG_FILE")
@@ -61,6 +68,39 @@ func main() {
 		panic(err)
 	}
 	ctx := context.Background()
+
+	tp, err := tracing.NewJaegerProvider(cfg.Jaeger.URL, serviceName)
+	if err != nil {
+		log.Fatal("Failed to initialize Jaeger provider", zap.Error(err))
+	}
+	defer func() {
+		if err := tp.Shutdown(ctx); err != nil {
+			log.Fatal("Failed to shut down Jaeger provider", zap.Error(err))
+		}
+	}()
+	otel.SetTracerProvider(tp)
+	otel.SetTextMapPropagator(propagation.TraceContext{})
+
+	reporter := prometheus.NewReporter(prometheus.Options{})
+	scope, closer := tally.NewRootScope(tally.ScopeOptions{
+		Tags:           map[string]string{"service": "metadata"},
+		CachedReporter: reporter,
+	}, 10*time.Second)
+	defer closer.Close()
+	http.Handle("/metrics", reporter.HTTPHandler())
+
+	go func() {
+		if err := http.ListenAndServe(fmt.Sprintf(":%d",
+			cfg.Prometheus.MetricsPort), nil); err != nil {
+			logger.Fatal("Failed to start the metrics handler", zap.Error(err))
+		}
+	}()
+
+	counter := scope.Tagged(map[string]string{
+		"service": "metadata",
+	}).Counter("service_started")
+	counter.Inc(1)
+
 	instanceID := discovery.GenerateInstanceID(serviceName)
 	if err := registry.Register(ctx, instanceID, serviceName,
 		fmt.Sprintf("localhost:%d", port)); err != nil {
@@ -85,7 +125,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	srv := grpc.NewServer()
+	srv := grpc.NewServer(grpc.UnaryInterceptor(otelgrpc.UnaryServerInterceptor()))
 	reflection.Register(srv)
 	gen.RegisterMetadataServiceServer(srv, h)
 	if err := srv.Serve(lis); err != nil {

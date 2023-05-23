@@ -10,6 +10,9 @@ import (
 	"github.com/mamalmaleki/go_movie/rating/internal/controller/rating"
 	grpcHandler "github.com/mamalmaleki/go_movie/rating/internal/handler/grpc"
 	"github.com/mamalmaleki/go_movie/rating/internal/ingester/kafka"
+	"github.com/uber-go/tally"
+	"github.com/uber-go/tally/prometheus"
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/propagation"
 	"go.uber.org/zap"
@@ -17,6 +20,7 @@ import (
 	"google.golang.org/grpc/reflection"
 	"gopkg.in/yaml.v3"
 	"net"
+	"net/http"
 	"os"
 	"os/signal"
 	"path/filepath"
@@ -33,7 +37,9 @@ import (
 const serviceName = "rating"
 
 func main() {
-	log.Println("Starting the movie rating service")
+	logger, _ := zap.NewProduction()
+	logger.Info("Started the service", zap.String("serviceName", serviceName))
+
 	filename := os.Getenv("CONFIG_FILE")
 	if filename == "" {
 		//filename = "../configs/base.yaml"
@@ -70,6 +76,28 @@ func main() {
 			log.Fatal("Failed to shut down Jaeger provider", zap.Error(err))
 		}
 	}()
+	otel.SetTracerProvider(tp)
+	otel.SetTextMapPropagator(propagation.TraceContext{})
+
+	reporter := prometheus.NewReporter(prometheus.Options{})
+	scope, closer := tally.NewRootScope(tally.ScopeOptions{
+		Tags:           map[string]string{"service": "metadata"},
+		CachedReporter: reporter,
+	}, 10*time.Second)
+	defer closer.Close()
+	http.Handle("/metrics", reporter.HTTPHandler())
+
+	go func() {
+		if err := http.ListenAndServe(fmt.Sprintf(":%d",
+			cfg.Prometheus.MetricsPort), nil); err != nil {
+			logger.Fatal("Failed to start the metrics handler", zap.Error(err))
+		}
+	}()
+
+	counter := scope.Tagged(map[string]string{
+		"service": "metadata",
+	}).Counter("service_started")
+	counter.Inc(1)
 
 	serviceDiscoverUrl := os.Getenv("SERVICE_DISCOVERY_URL")
 	if serviceDiscoverUrl == "" {
@@ -79,9 +107,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
-	otel.SetTracerProvider(tp)
-	otel.SetTextMapPropagator(propagation.TraceContext{})
 
 	instanceID := discovery.GenerateInstanceID(serviceName)
 	if err := registry.Register(ctx, instanceID, serviceName,
@@ -116,7 +141,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	srv := grpc.NewServer()
+	srv := grpc.NewServer(grpc.UnaryInterceptor(otelgrpc.UnaryServerInterceptor()))
 	reflection.Register(srv)
 	gen.RegisterRatingServiceServer(srv, h)
 
