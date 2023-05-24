@@ -2,11 +2,22 @@ package main
 
 import (
 	"context"
+	"crypto/md5"
+	"flag"
 	"fmt"
 	"github.com/mamalmaleki/go_movie/gen"
 	"github.com/mamalmaleki/go_movie/metadata/internal/controller/metadata"
+	"github.com/mamalmaleki/go_movie/pkg/tracing"
+	"github.com/uber-go/tally"
+	"github.com/uber-go/tally/prometheus"
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/propagation"
 	"gopkg.in/yaml.v3"
+	"math/rand"
+	"net/http"
 	"os"
+	"path/filepath"
 
 	//"github.com/mamalmaleki/go_movie/metadata/internal/repository/memory"
 	"google.golang.org/grpc"
@@ -27,12 +38,29 @@ const serviceName = "metadata"
 
 func main() {
 	logger, _ := zap.NewProduction()
-	logger.Info("Started the service", zap.String("serviceName", "metadata"))
+	defer logger.Sync()
 
-	log.Println("Starting the movie metadata service")
+	logger.Info("Started the service", zap.String("serviceName", serviceName))
+
+	simulateCPULoad := flag.Bool("simulatecpuload", false, "simulate CPU load for profiling")
+	flag.Parse()
+	if *simulateCPULoad {
+		go heavyOperation()
+	}
+
+	go func() {
+		if err := http.ListenAndServe("localhost:6060", nil); err != nil {
+			logger.Fatal("Failed to start profiler handler", zap.Error(err))
+		}
+	}()
+
 	filename := os.Getenv("CONFIG_FILE")
 	if filename == "" {
-		filename = "./metadata/configs/base.yaml"
+		var err error
+		filename, err = filepath.Abs("../metadata/configs/base.yaml")
+		if err != nil {
+			panic(err)
+		}
 	}
 	f, err := os.Open(filename)
 	if err != nil {
@@ -56,6 +84,39 @@ func main() {
 		panic(err)
 	}
 	ctx := context.Background()
+
+	tp, err := tracing.NewJaegerProvider(cfg.Jaeger.URL, serviceName)
+	if err != nil {
+		log.Fatal("Failed to initialize Jaeger provider", zap.Error(err))
+	}
+	defer func() {
+		if err := tp.Shutdown(ctx); err != nil {
+			log.Fatal("Failed to shut down Jaeger provider", zap.Error(err))
+		}
+	}()
+	otel.SetTracerProvider(tp)
+	otel.SetTextMapPropagator(propagation.TraceContext{})
+
+	reporter := prometheus.NewReporter(prometheus.Options{})
+	scope, closer := tally.NewRootScope(tally.ScopeOptions{
+		Tags:           map[string]string{"service": serviceName},
+		CachedReporter: reporter,
+	}, 10*time.Second)
+	defer closer.Close()
+	http.Handle("/metrics", reporter.HTTPHandler())
+
+	go func() {
+		if err := http.ListenAndServe(fmt.Sprintf(":%d",
+			cfg.Prometheus.MetricsPort), nil); err != nil {
+			logger.Fatal("Failed to start the metrics handler", zap.Error(err))
+		}
+	}()
+
+	counter := scope.Tagged(map[string]string{
+		"service": serviceName,
+	}).Counter("service_started")
+	counter.Inc(1)
+
 	instanceID := discovery.GenerateInstanceID(serviceName)
 	if err := registry.Register(ctx, instanceID, serviceName,
 		fmt.Sprintf("localhost:%d", port)); err != nil {
@@ -80,7 +141,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	srv := grpc.NewServer()
+	srv := grpc.NewServer(grpc.UnaryInterceptor(otelgrpc.UnaryServerInterceptor()))
 	reflection.Register(srv)
 	gen.RegisterMetadataServiceServer(srv, h)
 	if err := srv.Serve(lis); err != nil {
@@ -91,4 +152,12 @@ func main() {
 	//if err := http.ListenAndServe(fmt.Sprintf(":%d", port), nil); err != nil {
 	//	panic(err)
 	//}
+}
+
+func heavyOperation() {
+	token := make([]byte, 1024)
+	source := rand.NewSource(time.Now().UnixNano())
+	random := rand.New(source)
+	random.Read(token)
+	md5.New().Write(token)
 }
