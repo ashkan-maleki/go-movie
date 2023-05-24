@@ -22,3 +22,6 @@
 // https://opentelemetry.io
 // https://github.com/jaegertracing/jaeger
 // https://prometheus.io/docs/prometheus/latest/querying/basics/
+// https://prometheus.io/docs
+// https://graphviz.org/
+// https://pkg.go.dev/crypto/md5

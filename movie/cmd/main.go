@@ -80,7 +80,7 @@ func main() {
 
 	reporter := prometheus.NewReporter(prometheus.Options{})
 	scope, closer := tally.NewRootScope(tally.ScopeOptions{
-		Tags:           map[string]string{"service": "metadata"},
+		Tags:           map[string]string{"service": serviceName},
 		CachedReporter: reporter,
 	}, 10*time.Second)
 	defer closer.Close()
@@ -94,7 +94,7 @@ func main() {
 	}()
 
 	counter := scope.Tagged(map[string]string{
-		"service": "metadata",
+		"service": serviceName,
 	}).Counter("service_started")
 	counter.Inc(1)
 

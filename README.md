@@ -28,6 +28,11 @@ grpcurl -plaintext -d '{"record_id":"1", "record_type":"movie", "user_id": "alex
 
 grpcurl -plaintext -d '{"movie_id":"1"}' localhost:8083 MovieService/GetMovieDetails
 
-## docker run commands:
+## links:
+
+Prometheus Dashboard: http://localhost:9090/
+Alert Manager UI: http://localhost:9093
+Portainer: http://localhost:9000/
+
 
 

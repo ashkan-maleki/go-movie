@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"crypto/md5"
+	"flag"
 	"fmt"
 	"github.com/mamalmaleki/go_movie/gen"
 	"github.com/mamalmaleki/go_movie/metadata/internal/controller/metadata"
@@ -12,6 +14,7 @@ import (
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/propagation"
 	"gopkg.in/yaml.v3"
+	"math/rand"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -35,9 +38,22 @@ const serviceName = "metadata"
 
 func main() {
 	logger, _ := zap.NewProduction()
+	defer logger.Sync()
+
 	logger.Info("Started the service", zap.String("serviceName", serviceName))
 
-	log.Println("Starting the movie metadata service")
+	simulateCPULoad := flag.Bool("simulatecpuload", false, "simulate CPU load for profiling")
+	flag.Parse()
+	if *simulateCPULoad {
+		go heavyOperation()
+	}
+
+	go func() {
+		if err := http.ListenAndServe("localhost:6060", nil); err != nil {
+			logger.Fatal("Failed to start profiler handler", zap.Error(err))
+		}
+	}()
+
 	filename := os.Getenv("CONFIG_FILE")
 	if filename == "" {
 		var err error
@@ -83,7 +99,7 @@ func main() {
 
 	reporter := prometheus.NewReporter(prometheus.Options{})
 	scope, closer := tally.NewRootScope(tally.ScopeOptions{
-		Tags:           map[string]string{"service": "metadata"},
+		Tags:           map[string]string{"service": serviceName},
 		CachedReporter: reporter,
 	}, 10*time.Second)
 	defer closer.Close()
@@ -97,7 +113,7 @@ func main() {
 	}()
 
 	counter := scope.Tagged(map[string]string{
-		"service": "metadata",
+		"service": serviceName,
 	}).Counter("service_started")
 	counter.Inc(1)
 
@@ -136,4 +152,12 @@ func main() {
 	//if err := http.ListenAndServe(fmt.Sprintf(":%d", port), nil); err != nil {
 	//	panic(err)
 	//}
+}
+
+func heavyOperation() {
+	token := make([]byte, 1024)
+	source := rand.NewSource(time.Now().UnixNano())
+	random := rand.New(source)
+	random.Read(token)
+	md5.New().Write(token)
 }
