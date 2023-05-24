@@ -26,4 +26,13 @@ grpcurl -plaintext -d '{"record_id":"1", "record_type":"movie"}' localhost:8082 
 
 grpcurl -plaintext -d '{"record_id":"1", "record_type":"movie", "user_id": "alex", "rating_value": 5}' localhost:8082 RatingService/PutRating
 
-## docker run commands:
+grpcurl -plaintext -d '{"movie_id":"1"}' localhost:8083 MovieService/GetMovieDetails
+
+## links:
+
+Prometheus Dashboard: http://localhost:9090/
+Alert Manager UI: http://localhost:9093
+Portainer: http://localhost:9000/
+
+
+

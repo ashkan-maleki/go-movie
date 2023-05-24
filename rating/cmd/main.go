@@ -6,13 +6,21 @@ import (
 	"github.com/mamalmaleki/go_movie/gen"
 	"github.com/mamalmaleki/go_movie/pkg/discovery"
 	"github.com/mamalmaleki/go_movie/pkg/discovery/consul"
+	"github.com/mamalmaleki/go_movie/pkg/tracing"
 	"github.com/mamalmaleki/go_movie/rating/internal/controller/rating"
 	grpcHandler "github.com/mamalmaleki/go_movie/rating/internal/handler/grpc"
 	"github.com/mamalmaleki/go_movie/rating/internal/ingester/kafka"
+	"github.com/uber-go/tally"
+	"github.com/uber-go/tally/prometheus"
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/propagation"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"gopkg.in/yaml.v3"
 	"net"
+	"net/http"
 	"os"
 	"os/signal"
 	"path/filepath"
@@ -29,13 +37,19 @@ import (
 const serviceName = "rating"
 
 func main() {
-	log.Println("Starting the movie rating service")
+	logger, _ := zap.NewProduction()
+	logger.Info("Started the service", zap.String("serviceName", serviceName))
+
 	filename := os.Getenv("CONFIG_FILE")
 	if filename == "" {
 		//filename = "../configs/base.yaml"
 		//filename = "./rating/configs/base.yaml"
 		//filename, _ = os.Getwd()
-		filename, _ = filepath.Abs("../rating/configs/base.yaml")
+		var err error
+		filename, err = filepath.Abs("../rating/configs/base.yaml")
+		if err != nil {
+			panic(err)
+		}
 	}
 	f, err := os.Open(filename)
 	if err != nil {
@@ -49,6 +63,41 @@ func main() {
 	//flag.IntVar(&port, "port", 8082, "API handler port")
 	//flag.Parse()
 	log.Printf("Starting the movie metadata service on port %d", port)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	tp, err := tracing.NewJaegerProvider(cfg.Jaeger.URL, serviceName)
+	if err != nil {
+		log.Fatal("Failed to initialize Jaeger provider", zap.Error(err))
+	}
+	defer func() {
+		if err := tp.Shutdown(ctx); err != nil {
+			log.Fatal("Failed to shut down Jaeger provider", zap.Error(err))
+		}
+	}()
+	otel.SetTracerProvider(tp)
+	otel.SetTextMapPropagator(propagation.TraceContext{})
+
+	reporter := prometheus.NewReporter(prometheus.Options{})
+	scope, closer := tally.NewRootScope(tally.ScopeOptions{
+		Tags:           map[string]string{"service": serviceName},
+		CachedReporter: reporter,
+	}, 10*time.Second)
+	defer closer.Close()
+	http.Handle("/metrics", reporter.HTTPHandler())
+	go func() {
+		if err := http.ListenAndServe(fmt.Sprintf(":%d",
+			cfg.Prometheus.MetricsPort), nil); err != nil {
+			logger.Fatal("Failed to start the metrics handler", zap.Error(err))
+		}
+	}()
+
+	counter := scope.Tagged(map[string]string{
+		"service": serviceName,
+	}).Counter("service_started")
+	counter.Inc(1)
+
 	serviceDiscoverUrl := os.Getenv("SERVICE_DISCOVERY_URL")
 	if serviceDiscoverUrl == "" {
 		serviceDiscoverUrl = "localhost:8500"
@@ -57,8 +106,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	//ctx := context.Background()
-	ctx, cancel := context.WithCancel(context.Background())
+
 	instanceID := discovery.GenerateInstanceID(serviceName)
 	if err := registry.Register(ctx, instanceID, serviceName,
 		fmt.Sprintf("localhost:%d", port)); err != nil {
@@ -92,7 +140,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	srv := grpc.NewServer()
+	srv := grpc.NewServer(grpc.UnaryInterceptor(otelgrpc.UnaryServerInterceptor()))
 	reflection.Register(srv)
 	gen.RegisterRatingServiceServer(srv, h)
 

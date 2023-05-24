@@ -15,6 +15,15 @@ services:
   db:
     image: mysql:latest
 
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+
+  prometheus:
+    image: prom/prometheus
+
+  alertmanager:
+    image: prom/alertmanager
+
   metadata:
     image: metadata
 
@@ -28,4 +37,5 @@ volumes:
   portainer_data:
   db:
     driver: local
+  prometheus_data:
 
