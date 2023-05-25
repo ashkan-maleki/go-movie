@@ -16,6 +16,7 @@ import (
 	"gopkg.in/yaml.v3"
 	"math/rand"
 	"net/http"
+	_ "net/http/pprof"
 	"os"
 	"path/filepath"
 
@@ -155,9 +156,11 @@ func main() {
 }
 
 func heavyOperation() {
-	token := make([]byte, 1024)
+	time.Sleep(5 * time.Second)
+	token := make([]byte, 8192)
 	source := rand.NewSource(time.Now().UnixNano())
 	random := rand.New(source)
 	random.Read(token)
 	md5.New().Write(token)
+	log.Println("Heavy")
 }
