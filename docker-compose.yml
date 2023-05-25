@@ -24,6 +24,9 @@ services:
   alertmanager:
     image: prom/alertmanager
 
+  grafana:
+    image: grafana/grafana-oss
+
   metadata:
     image: metadata
 
