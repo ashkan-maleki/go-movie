@@ -5,6 +5,7 @@
 // TODO: write a beautiful readme
 // TODO: gitignore workspace ide files
 // TODO: remove ide special files and directories from git repository
+// TODO: fix or ignore prometheus email
 // and add them to git ignore.
 // # Second Phase
 // TODO: implement Elastic Stack (ELK)
@@ -25,3 +26,7 @@
 // https://prometheus.io/docs
 // https://graphviz.org/
 // https://pkg.go.dev/crypto/md5
+// https://grafana.com/docs/
+// https://www.baeldung.com/cs/framework-vs-library
+// https://jwt.io
+// https://github.com/golang-jwt/jwt
