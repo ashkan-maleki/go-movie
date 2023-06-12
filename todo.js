@@ -1,4 +1,6 @@
 // # First Phase
+// TODO: setup a local git repository
+// # Second Phase
 // TODO: kubernetes needs base.yaml to get modified
 // It means environment variables should be defined
 // TODO: create makefile
@@ -7,7 +9,7 @@
 // TODO: remove ide special files and directories from git repository
 // TODO: fix or ignore prometheus email
 // and add them to git ignore.
-// # Second Phase
+// # Third Phase
 // TODO: implement Elastic Stack (ELK)
 
 
