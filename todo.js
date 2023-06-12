@@ -1,4 +1,4 @@
-// TODO: create makefile, docker-compose, and docker ignore
+// TODO: local and docker compose environment variables
 // # Second Phase
 // TODO: kubernetes needs base.yaml to get modified
 // It means environment variables should be defined
