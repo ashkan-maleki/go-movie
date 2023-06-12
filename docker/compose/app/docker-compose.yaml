@@ -1,0 +1,10 @@
+version: '3.7'
+services:
+  metadata:
+    image: metadata
+
+  movie:
+    image: movie
+
+  rating:
+    image: rating
