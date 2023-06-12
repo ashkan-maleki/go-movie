@@ -1,9 +1,8 @@
-// # First Phase
-// TODO: setup a local git repository
+// TODO: create makefile, docker-compose, and docker ignore
 // # Second Phase
 // TODO: kubernetes needs base.yaml to get modified
 // It means environment variables should be defined
-// TODO: create makefile
+
 // TODO: write a beautiful readme
 // TODO: gitignore workspace ide files
 // TODO: remove ide special files and directories from git repository
