@@ -7,15 +7,16 @@ services:
     hostname: metadata
     build:
       context: .
-      dockerfile: docker/Dockerfile
+      dockerfile: ../../dockerfile/Dockerfile
       args:
         service: metadata
     expose:
       - '8081'
     environment:
       ENVIRONMENT: development
-      CONFIG_FILE: "movie/base.yaml"
       SERVICE_DISCOVERY_URL: "consul-agent:8500"
+      http_server_port: 8081
+      prometheus_metrics_port: 8091
     depends_on:
       - db
       - agent
@@ -28,7 +29,7 @@ services:
     hostname: movie
     build:
       context: .
-      dockerfile: docker/Dockerfile
+      dockerfile: ../../dockerfile/Dockerfile
       args:
         service: movie
     expose:
@@ -49,7 +50,7 @@ services:
     hostname: rating
     build:
       context: .
-      dockerfile: docker/Dockerfile-csg-enabled
+      dockerfile: ../../dockerfile/Dockerfile-csg-enabled
       args:
         service: rating
     expose:

@@ -1,6 +1,6 @@
 package config
 
 const (
-	BaseConfigFile = "BASE_CONFIG_FILE"
-	AppConfigFile  = "APP_CONFIG_FILE"
+	InfraConfigFile = "INFRA_CONFIG_FILE"
+	AppConfigFile   = "APP_CONFIG_FILE"
 )

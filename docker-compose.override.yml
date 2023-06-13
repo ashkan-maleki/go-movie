@@ -117,7 +117,7 @@ services:
     hostname: metadata
     build:
       context: .
-      dockerfile: docker/Dockerfile
+      dockerfile: docker/dockerfile/Dockerfile
       args:
         service: metadata
     expose:
@@ -138,7 +138,7 @@ services:
     hostname: movie
     build:
       context: .
-      dockerfile: docker/Dockerfile
+      dockerfile: docker/dockerfile/Dockerfile
       args:
         service: movie
     expose:
@@ -159,7 +159,7 @@ services:
     hostname: rating
     build:
       context: .
-      dockerfile: docker/Dockerfile-csg-enabled
+      dockerfile: docker/dockerfile/Dockerfile-csg-enabled
       args:
         service: rating
     expose:

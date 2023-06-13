@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/mamalmaleki/go-movie/gen"
+	"github.com/mamalmaleki/go-movie/metadata/cmd/app"
 	"github.com/mamalmaleki/go-movie/metadata/internal/controller/metadata"
 	"github.com/mamalmaleki/go-movie/pkg/tracing"
 	"github.com/uber-go/tally"
@@ -13,13 +14,9 @@ import (
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/propagation"
-	"gopkg.in/yaml.v3"
 	"math/rand"
 	"net/http"
 	_ "net/http/pprof"
-	"os"
-	"path/filepath"
-
 	//"github.com/mamalmaleki/go-movie/metadata/internal/repository/memory"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -41,6 +38,11 @@ func main() {
 	logger, _ := zap.NewProduction()
 	defer logger.Sync()
 
+	app, err := app.New()
+	if err != nil {
+		panic("app creation just failed")
+	}
+
 	logger.Info("Started the service", zap.String("serviceName", serviceName))
 
 	simulateCPULoad := flag.Bool("simulatecpuload", false, "simulate CPU load for profiling")
@@ -55,45 +57,17 @@ func main() {
 		}
 	}()
 
-	filename := os.Getenv("CONFIG_FILE")
-	if filename == "" {
-		var err error
-		filename, err = filepath.Abs("../metadata/configs/base.yaml")
-		if err != nil {
-			log.Println(err)
-		}
-	}
-	f, err := os.Open(filename)
-	if err != nil {
-		log.Println(err)
-	}
-	defer f.Close()
-	var cfg config
-	if err := yaml.NewDecoder(f).Decode(&cfg); err != nil {
-		//panic(err)
-		log.Println(err)
-	}
-
-	newCfg, err := newConfig()
-	if err != nil {
-		panic(err)
-	}
-	port := newCfg.Base.HttpServerPort
-	//port := cfg.API.Port
+	port := app.Config.HttpServerPort
 	//flag.IntVar(&port, "port", 8081, "API handler port")
 	//flag.Parse()
 	log.Printf("Starting the movie metadata service on port %d", port)
-	serviceDiscoverUrl := os.Getenv("SERVICE_DISCOVERY_URL")
-	if serviceDiscoverUrl == "" {
-		serviceDiscoverUrl = "localhost:8500"
-	}
-	registry, err := consul.NewRegistry(serviceDiscoverUrl)
+	registry, err := consul.NewRegistry(app.Infra.Config.ServiceDiscoveryUrl)
 	if err != nil {
 		panic(err)
 	}
 	ctx := context.Background()
 
-	tp, err := tracing.NewJaegerProvider(cfg.Jaeger.URL, serviceName)
+	tp, err := tracing.NewJaegerProvider(app.Infra.Config.JaegerUrl, serviceName)
 	if err != nil {
 		log.Fatal("Failed to initialize Jaeger provider", zap.Error(err))
 	}
@@ -115,7 +89,7 @@ func main() {
 
 	go func() {
 		if err := http.ListenAndServe(fmt.Sprintf(":%d",
-			cfg.Prometheus.MetricsPort), nil); err != nil {
+			app.Config.PrometheusMetricsPort), nil); err != nil {
 			logger.Fatal("Failed to start the metrics handler", zap.Error(err))
 		}
 	}()
