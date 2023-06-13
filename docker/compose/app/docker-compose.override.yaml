@@ -3,13 +3,15 @@ version: '3.7'
 
 services:
   metadata:
+    image: ashkanmaleki/metadata:1.0.0
     container_name: metadata
     hostname: metadata
-    build:
-      context: .
-      dockerfile: ../../dockerfile/Dockerfile
-      args:
-        service: metadata
+#    build:
+#      context: .
+##      dockerfile: ../../dockerfile/Dockerfile
+#      dockerfile: ../../dockerfile/Dockerfile-test
+#      args:
+#        service: metadata
     expose:
       - '8081'
     environment:
@@ -22,14 +24,15 @@ services:
       - agent
       - zoo1
       - kafka1
-    command: [ "/movie/service" ]
+#    command: [ "/movie/service" ]
 
   movie:
     container_name: movie
     hostname: movie
     build:
       context: .
-      dockerfile: ../../dockerfile/Dockerfile
+#      dockerfile: ../../dockerfile/Dockerfile
+      dockerfile: ../../dockerfile/Dockerfile-test
       args:
         service: movie
     expose:
@@ -43,14 +46,15 @@ services:
       - agent
       - zoo1
       - kafka1
-    command: [ "/movie/service" ]
+#    command: [ "/movie/service" ]
 
   rating:
     container_name: rating
     hostname: rating
     build:
       context: .
-      dockerfile: ../../dockerfile/Dockerfile-csg-enabled
+#      dockerfile: ../../dockerfile/Dockerfile-csg-enabled
+      dockerfile: ../../dockerfile/Dockerfile-test
       args:
         service: rating
     expose:
@@ -65,4 +69,4 @@ services:
       - agent
       - zoo1
       - kafka1
-    command: [ "/movie/service" ]
+#    command: [ "/movie/service" ]

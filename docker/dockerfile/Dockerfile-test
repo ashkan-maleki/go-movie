@@ -1,0 +1,17 @@
+ARG service
+FROM golang:1.20-alpine AS builder
+ARG service
+
+WORKDIR /movie
+
+# Retrieve application dependencies.
+# This allows the container build to reuse cached dependencies.
+# Expecting to copy go.mod and if present go.sum.
+COPY go.* ./
+#RUN go mod download
+
+# Copy local code to the container image.
+#COPY ./ ./
+
+
+CMD ["ls"]

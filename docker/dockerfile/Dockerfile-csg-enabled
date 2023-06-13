@@ -11,7 +11,7 @@ COPY go.* ./
 RUN go mod download
 
 # Copy local code to the container image.
-COPY ../.. ./
+COPY ./ ./
 
 RUN #sed -i -e 's/v[[:digit:]]\..*\//edge\//g' /etc/apk/repositories
 RUN #apk upgrade --update-cache --available

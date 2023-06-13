@@ -11,7 +11,8 @@ COPY go.* ./
 RUN go mod download
 
 # Copy local code to the container image.
-COPY ../.. ./
+COPY ./ ./
+
 
 # Build the binary.
 RUN go build -ldflags="-s -w" -v -o service ./${service}/cmd/
