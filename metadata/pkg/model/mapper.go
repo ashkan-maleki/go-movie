@@ -1,6 +1,6 @@
 package model
 
-import "github.com/mamalmaleki/go_movie/gen"
+import "github.com/mamalmaleki/go-movie/gen"
 
 // MetadataToProto converts a Metadata struct into a generated proto counterpart.
 func MetadataToProto(m *Metadata) *gen.Metadata {

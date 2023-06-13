@@ -1,10 +1,10 @@
 package testutil
 
 import (
-	"github.com/mamalmaleki/go_movie/gen"
-	"github.com/mamalmaleki/go_movie/rating/internal/controller/rating"
-	grpcHandler "github.com/mamalmaleki/go_movie/rating/internal/handler/grpc"
-	"github.com/mamalmaleki/go_movie/rating/internal/repository/memory"
+	"github.com/mamalmaleki/go-movie/gen"
+	"github.com/mamalmaleki/go-movie/rating/internal/controller/rating"
+	grpcHandler "github.com/mamalmaleki/go-movie/rating/internal/handler/grpc"
+	"github.com/mamalmaleki/go-movie/rating/internal/repository/memory"
 )
 
 func NewTestRatingGRPCServer() gen.RatingServiceServer {

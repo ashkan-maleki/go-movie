@@ -9,7 +9,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	model "github.com/mamalmaleki/go_movie/metadata/pkg/model"
+	model "github.com/mamalmaleki/go-movie/metadata/pkg/model"
 )
 
 // MockmetadataRepository is a mock of metadataRepository interface.

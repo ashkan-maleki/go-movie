@@ -2,7 +2,7 @@ package grpcutil
 
 import (
 	"context"
-	"github.com/mamalmaleki/go_movie/pkg/discovery"
+	"github.com/mamalmaleki/go-movie/pkg/discovery"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"

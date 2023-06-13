@@ -1,0 +1,5 @@
+base:
+  service_discovery_url: localhost:8500
+  httpServerPort: 8080
+
+service_discovery_url: localhost:8500

@@ -2,8 +2,8 @@ package memory
 
 import (
 	"context"
-	"github.com/mamalmaleki/go_movie/metadata/internal/repository"
-	"github.com/mamalmaleki/go_movie/metadata/pkg/model"
+	"github.com/mamalmaleki/go-movie/metadata/internal/repository"
+	"github.com/mamalmaleki/go-movie/metadata/pkg/model"
 	"go.opentelemetry.io/otel"
 	"sync"
 )

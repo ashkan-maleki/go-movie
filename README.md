@@ -1,4 +1,4 @@
-# go_movie
+# go-movie
 microservices based movie catalog developed using golang
 
 

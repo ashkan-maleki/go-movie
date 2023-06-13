@@ -2,11 +2,15 @@
 # run
 # ==============================================================================
 
+tidy:
+	go mod tidy
+	go mod vendor
+
 run-movie:
 	go run movie/cmd/*.go
 
 run-metadata:
-	go run metadata/cmd/*.go
+	BASE_CONFIG_FILE=configs/base.yaml go run metadata/cmd/*.go
 
 run-rating:
 	go run rating/cmd/*.go

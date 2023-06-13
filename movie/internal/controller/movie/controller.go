@@ -3,10 +3,10 @@ package movie
 import (
 	"context"
 	"errors"
-	metadataModel "github.com/mamalmaleki/go_movie/metadata/pkg/model"
-	"github.com/mamalmaleki/go_movie/movie/internal/gateway"
-	"github.com/mamalmaleki/go_movie/movie/pkg/model"
-	ratingModel "github.com/mamalmaleki/go_movie/rating/pkg/model"
+	metadataModel "github.com/mamalmaleki/go-movie/metadata/pkg/model"
+	"github.com/mamalmaleki/go-movie/movie/internal/gateway"
+	"github.com/mamalmaleki/go-movie/movie/pkg/model"
+	ratingModel "github.com/mamalmaleki/go-movie/rating/pkg/model"
 )
 
 // ErrNotFound is returned when the movie metadata is not found.

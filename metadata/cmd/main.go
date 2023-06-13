@@ -5,9 +5,9 @@ import (
 	"crypto/md5"
 	"flag"
 	"fmt"
-	"github.com/mamalmaleki/go_movie/gen"
-	"github.com/mamalmaleki/go_movie/metadata/internal/controller/metadata"
-	"github.com/mamalmaleki/go_movie/pkg/tracing"
+	"github.com/mamalmaleki/go-movie/gen"
+	"github.com/mamalmaleki/go-movie/metadata/internal/controller/metadata"
+	"github.com/mamalmaleki/go-movie/pkg/tracing"
 	"github.com/uber-go/tally"
 	"github.com/uber-go/tally/prometheus"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
@@ -20,16 +20,16 @@ import (
 	"os"
 	"path/filepath"
 
-	//"github.com/mamalmaleki/go_movie/metadata/internal/repository/memory"
+	//"github.com/mamalmaleki/go-movie/metadata/internal/repository/memory"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"net"
 
-	//httpHandler "github.com/mamalmaleki/go_movie/metadata/internal/handler/http"
-	grpcHandler "github.com/mamalmaleki/go_movie/metadata/internal/handler/grpc"
-	"github.com/mamalmaleki/go_movie/metadata/internal/repository/mysql"
-	"github.com/mamalmaleki/go_movie/pkg/discovery"
-	"github.com/mamalmaleki/go_movie/pkg/discovery/consul"
+	//httpHandler "github.com/mamalmaleki/go-movie/metadata/internal/handler/http"
+	grpcHandler "github.com/mamalmaleki/go-movie/metadata/internal/handler/grpc"
+	"github.com/mamalmaleki/go-movie/metadata/internal/repository/mysql"
+	"github.com/mamalmaleki/go-movie/pkg/discovery"
+	"github.com/mamalmaleki/go-movie/pkg/discovery/consul"
 	"go.uber.org/zap"
 	"log"
 	"time"
@@ -60,19 +60,26 @@ func main() {
 		var err error
 		filename, err = filepath.Abs("../metadata/configs/base.yaml")
 		if err != nil {
-			panic(err)
+			log.Println(err)
 		}
 	}
 	f, err := os.Open(filename)
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 	defer f.Close()
 	var cfg config
 	if err := yaml.NewDecoder(f).Decode(&cfg); err != nil {
+		//panic(err)
+		log.Println(err)
+	}
+
+	newCfg, err := newConfig()
+	if err != nil {
 		panic(err)
 	}
-	port := cfg.API.Port
+	port := newCfg.Base.HttpServerPort
+	//port := cfg.API.Port
 	//flag.IntVar(&port, "port", 8081, "API handler port")
 	//flag.Parse()
 	log.Printf("Starting the movie metadata service on port %d", port)

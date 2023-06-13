@@ -4,7 +4,49 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8068eeb8-9d21-46a2-987a-9bf7e065f2e6" name="Changes" comment="" />
+    <list default="true" id="8068eeb8-9d21-46a2-987a-9bf7e065f2e6" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/ratingingester/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/ratingingester/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/sizecompare/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/sizecompare/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen/mock/metadata/repository/repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/gen/mock/metadata/repository/repository.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/grpcutil/grpcutil.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/grpcutil/grpcutil.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/makefile" beforeDir="false" afterPath="$PROJECT_DIR$/makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/metadata/cmd/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/metadata/cmd/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/metadata/cmd/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/metadata/cmd/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/metadata/configs/base.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/metadata/configs/base.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/metadata/internal/controller/metadata/controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/metadata/internal/controller/metadata/controller.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/metadata/internal/controller/metadata/controller_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/metadata/internal/controller/metadata/controller_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/metadata/internal/handler/grpc/grpc.go" beforeDir="false" afterPath="$PROJECT_DIR$/metadata/internal/handler/grpc/grpc.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/metadata/internal/handler/http/http.go" beforeDir="false" afterPath="$PROJECT_DIR$/metadata/internal/handler/http/http.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/metadata/internal/repository/memory/memory.go" beforeDir="false" afterPath="$PROJECT_DIR$/metadata/internal/repository/memory/memory.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/metadata/internal/repository/mysql/mysql.go" beforeDir="false" afterPath="$PROJECT_DIR$/metadata/internal/repository/mysql/mysql.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/metadata/pkg/model/mapper.go" beforeDir="false" afterPath="$PROJECT_DIR$/metadata/pkg/model/mapper.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/metadata/pkg/testutil/testutil.go" beforeDir="false" afterPath="$PROJECT_DIR$/metadata/pkg/testutil/testutil.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/movie/cmd/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/movie/cmd/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/movie/internal/controller/movie/controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/movie/internal/controller/movie/controller.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/movie/internal/gateway/metadata/grpc/metadata.go" beforeDir="false" afterPath="$PROJECT_DIR$/movie/internal/gateway/metadata/grpc/metadata.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/movie/internal/gateway/metadata/http/metadata.go" beforeDir="false" afterPath="$PROJECT_DIR$/movie/internal/gateway/metadata/http/metadata.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/movie/internal/gateway/rating/grpc/rating.go" beforeDir="false" afterPath="$PROJECT_DIR$/movie/internal/gateway/rating/grpc/rating.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/movie/internal/gateway/rating/http/rating.go" beforeDir="false" afterPath="$PROJECT_DIR$/movie/internal/gateway/rating/http/rating.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/movie/internal/handler/grpc/grpc.go" beforeDir="false" afterPath="$PROJECT_DIR$/movie/internal/handler/grpc/grpc.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/movie/internal/handler/http/http.go" beforeDir="false" afterPath="$PROJECT_DIR$/movie/internal/handler/http/http.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/movie/pkg/model/model.go" beforeDir="false" afterPath="$PROJECT_DIR$/movie/pkg/model/model.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/movie/pkg/testutil/testutil.go" beforeDir="false" afterPath="$PROJECT_DIR$/movie/pkg/testutil/testutil.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/discovery/consul/consul.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/discovery/consul/consul.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/discovery/memory/memory.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/discovery/memory/memory.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rating/cmd/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/rating/cmd/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rating/internal/controller/rating/controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/rating/internal/controller/rating/controller.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rating/internal/handler/grpc/grpc.go" beforeDir="false" afterPath="$PROJECT_DIR$/rating/internal/handler/grpc/grpc.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rating/internal/handler/http/http.go" beforeDir="false" afterPath="$PROJECT_DIR$/rating/internal/handler/http/http.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rating/internal/ingester/kafka/ingester.go" beforeDir="false" afterPath="$PROJECT_DIR$/rating/internal/ingester/kafka/ingester.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rating/internal/repository/memory/memory.go" beforeDir="false" afterPath="$PROJECT_DIR$/rating/internal/repository/memory/memory.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rating/internal/repository/mysql/mysql.go" beforeDir="false" afterPath="$PROJECT_DIR$/rating/internal/repository/mysql/mysql.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rating/pkg/testutil/testutil.go" beforeDir="false" afterPath="$PROJECT_DIR$/rating/pkg/testutil/testutil.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/integration/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/test/integration/main.go" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -17,7 +59,7 @@
       </list>
     </option>
   </component>
-  <component name="GOROOT" url="file:///home/linuxbrew/.linuxbrew/Cellar/go/1.20.3/libexec" />
+  <component name="GOROOT" url="file:///snap/go/10199" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -44,18 +86,18 @@
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
     &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/media/johnny/New Volume9/learn/go/src/go_recipe_api&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/media/johnny/New Volume10/learn/go/src/go-movie&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;
   }
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/docker/compose/monitor" />
       <recent name="$PROJECT_DIR$/rating" />
       <recent name="$PROJECT_DIR$/movie" />
       <recent name="$PROJECT_DIR$/docker" />
       <recent name="$PROJECT_DIR$/movie/cmd" />
-      <recent name="$PROJECT_DIR$" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />

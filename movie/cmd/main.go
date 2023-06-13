@@ -3,10 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/mamalmaleki/go_movie/gen"
-	"github.com/mamalmaleki/go_movie/movie/internal/controller/movie"
-	grpcHandler "github.com/mamalmaleki/go_movie/movie/internal/handler/grpc"
-	"github.com/mamalmaleki/go_movie/pkg/tracing"
+	"github.com/mamalmaleki/go-movie/gen"
+	"github.com/mamalmaleki/go-movie/movie/internal/controller/movie"
+	grpcHandler "github.com/mamalmaleki/go-movie/movie/internal/handler/grpc"
+	"github.com/mamalmaleki/go-movie/pkg/tracing"
 	"github.com/uber-go/tally"
 	"github.com/uber-go/tally/prometheus"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
@@ -22,12 +22,12 @@ import (
 	"os"
 	"path/filepath"
 
-	//metadataGatewayPkg "github.com/mamalmaleki/go_movie/movie/internal/gateway/metadata/http"
-	metadataGatewayPkg "github.com/mamalmaleki/go_movie/movie/internal/gateway/metadata/grpc"
-	ratingGatewayPkg "github.com/mamalmaleki/go_movie/movie/internal/gateway/rating/grpc"
+	//metadataGatewayPkg "github.com/mamalmaleki/go-movie/movie/internal/gateway/metadata/http"
+	metadataGatewayPkg "github.com/mamalmaleki/go-movie/movie/internal/gateway/metadata/grpc"
+	ratingGatewayPkg "github.com/mamalmaleki/go-movie/movie/internal/gateway/rating/grpc"
 
-	"github.com/mamalmaleki/go_movie/pkg/discovery"
-	"github.com/mamalmaleki/go_movie/pkg/discovery/consul"
+	"github.com/mamalmaleki/go-movie/pkg/discovery"
+	"github.com/mamalmaleki/go-movie/pkg/discovery/consul"
 	"log"
 	"time"
 )

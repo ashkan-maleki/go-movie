@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
-	"github.com/mamalmaleki/go_movie/rating/pkg/model"
+	"github.com/mamalmaleki/go-movie/rating/pkg/model"
 )
 
 // Ingester defines a kafka ingester.
