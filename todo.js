@@ -1,11 +1,14 @@
 // TODO: local and docker compose environment variables
+// TODO: pass version variable from makefile to docker compose.
+// TODO: viper for docker variables
+// TODO: logging for app creation
+// TODO: docker compose dependency on each other in different files.
 // # Second Phase
-// TODO: kubernetes needs base.yaml to get modified
+// TODO: ELK
 // It means environment variables should be defined
 
 // TODO: write a beautiful readme
-// TODO: gitignore workspace ide files
-// TODO: remove ide special files and directories from git repository
+// TODO: put git special files into docker ignore
 // TODO: fix or ignore prometheus email
 // and add them to git ignore.
 // # Third Phase

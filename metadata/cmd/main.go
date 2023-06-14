@@ -6,7 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/mamalmaleki/go-movie/gen"
-	"github.com/mamalmaleki/go-movie/metadata/cmd/app"
+	appPkg "github.com/mamalmaleki/go-movie/metadata/cmd/app"
 	"github.com/mamalmaleki/go-movie/metadata/internal/controller/metadata"
 	"github.com/mamalmaleki/go-movie/pkg/tracing"
 	"github.com/uber-go/tally"
@@ -38,9 +38,9 @@ func main() {
 	logger, _ := zap.NewProduction()
 	defer logger.Sync()
 
-	app, err := app.New()
+	app, err := appPkg.New()
 	if err != nil {
-		panic("app creation just failed")
+		panic(fmt.Errorf("app creation just failed: %w", err))
 	}
 
 	logger.Info("Started the service", zap.String("serviceName", serviceName))
