@@ -8,8 +8,8 @@ import (
 )
 
 type CommonConfig struct {
-	HttpServerPort        int `yaml:"HTTP_SERVER_PORT"`
-	PrometheusMetricsPort int `yaml:"PROMETHEUS_METRICS_PORT"`
+	HttpServerPort        int `mapstructure:"HTTP_SERVER_PORT" validate:"required"`
+	PrometheusMetricsPort int `mapstructure:"PROMETHEUS_METRICS_PORT" validate:"required"`
 }
 
 func NewCommonConfig() (*CommonConfig, error) {
@@ -18,18 +18,12 @@ func NewCommonConfig() (*CommonConfig, error) {
 	if err != nil {
 		return nil, err
 	}
-	httpServerPort := viper.GetInt(VarHttpServerPort)
-	if httpServerPort == 0 {
-		return nil, errors.New(fmt.Sprintf("%s is not provided", VarHttpServerPort))
-	}
 
-	prometheusMetricsPort := viper.GetInt("prometheus_metrics_port")
-	if prometheusMetricsPort == 0 {
-		return nil, errors.New(fmt.Sprintf("%s is not provided", VarPrometheusMetricsPort))
+	var config CommonConfig
+	if err := viper.Unmarshal(&config); err != nil {
+		return nil, errors.New(fmt.Sprintf("unable to unmarshall the config %v", err))
 	}
+	log.Println(config)
 
-	return &CommonConfig{
-		HttpServerPort:        httpServerPort,
-		PrometheusMetricsPort: prometheusMetricsPort,
-	}, nil
+	return &config, nil
 }

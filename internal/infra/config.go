@@ -3,14 +3,15 @@ package infra
 import (
 	"errors"
 	"fmt"
+	validator "github.com/go-playground/validator/v10"
 	conf "github.com/mamalmaleki/go-movie/internal/config"
 	"log"
 	"os"
 )
 
 type config struct {
-	ServiceDiscoveryUrl string `yaml:"SERVICE_DISCOVERY_URL"`
-	JaegerUrl           string `yaml:"JAEGER_URL"`
+	ServiceDiscoveryUrl string `mapstructure:"SERVICE_DISCOVERY_URL" validate:"required"`
+	JaegerUrl           string `mapstructure:"JAEGER_URL" validate:"required"`
 }
 
 func newConfig() (*config, error) {
@@ -20,18 +21,15 @@ func newConfig() (*config, error) {
 		return nil, err
 	}
 
-	serviceDiscoveryUrl := viper.GetString(conf.VarServiceDiscoveryUrl)
-	if serviceDiscoveryUrl == "" {
-		return nil, errors.New(fmt.Sprintf("%s is not provided", conf.VarServiceDiscoveryUrl))
+	var conf config
+	if err := viper.Unmarshal(&conf); err != nil {
+		return nil, errors.New(fmt.Sprintf("unable to unmarshall the config %v", err))
 	}
-
-	jaegerUrl := viper.GetString(conf.VarJaegerUrl)
-	if jaegerUrl == "" {
-		return nil, errors.New(fmt.Sprintf("%s is not provided", conf.VarJaegerUrl))
+	validate := validator.New()
+	if err := validate.Struct(&conf); err != nil {
+		return nil, errors.New(fmt.Sprintf("Missing required attributes %v\n", err))
 	}
+	log.Println(conf)
 
-	return &config{
-		ServiceDiscoveryUrl: serviceDiscoveryUrl,
-		JaegerUrl:           jaegerUrl,
-	}, nil
+	return &conf, nil
 }
