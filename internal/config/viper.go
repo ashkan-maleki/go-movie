@@ -10,7 +10,6 @@ func SetViperConfig(filename string) (*viper.Viper, error) {
 	vip := viper.New()
 	if filename == "" {
 		log.Println("filename is empty")
-
 		vip.AutomaticEnv()
 	} else {
 		if _, err := os.Stat(filename); err != nil {
@@ -25,7 +24,6 @@ func SetViperConfig(filename string) (*viper.Viper, error) {
 			log.Printf("Reading config failed\n")
 			return nil, err
 		}
-
 	}
 
 	return vip, nil

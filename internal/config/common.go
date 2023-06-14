@@ -3,13 +3,14 @@ package config
 import (
 	"errors"
 	"fmt"
+	"github.com/go-playground/validator/v10"
 	"log"
 	"os"
 )
 
 type CommonConfig struct {
-	HttpServerPort        int `mapstructure:"HTTP_SERVER_PORT" validate:"required"`
-	PrometheusMetricsPort int `mapstructure:"PROMETHEUS_METRICS_PORT" validate:"required"`
+	HttpServerPort        int `mapstructure:"HTTP_SERVER_PORT" structs:"HTTP_SERVER_PORT" env:"HTTP_SERVER_PORT"`
+	PrometheusMetricsPort int `mapstructure:"PROMETHEUS_METRICS_PORT"`
 }
 
 func NewCommonConfig() (*CommonConfig, error) {
@@ -24,6 +25,10 @@ func NewCommonConfig() (*CommonConfig, error) {
 		return nil, errors.New(fmt.Sprintf("unable to unmarshall the config %v", err))
 	}
 	log.Println(config)
+	validate := validator.New()
+	if err := validate.Struct(&config); err != nil {
+		return nil, errors.New(fmt.Sprintf("Missing required attributes %v\n", err))
+	}
 
 	return &config, nil
 }
