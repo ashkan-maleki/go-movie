@@ -2,30 +2,30 @@ package config
 
 import (
 	"errors"
-	"github.com/spf13/viper"
+	"fmt"
 	"log"
 	"os"
 )
 
 type CommonConfig struct {
-	HttpServerPort        int `yaml:"http_server_port"`
-	PrometheusMetricsPort int `yaml:"prometheus_metrics_port"`
+	HttpServerPort        int `yaml:"HTTP_SERVER_PORT"`
+	PrometheusMetricsPort int `yaml:"PROMETHEUS_METRICS_PORT"`
 }
 
 func NewCommonConfig() (*CommonConfig, error) {
 	log.Println("beginning the creation of the base config object.")
-	err := SetViperConfig(os.Getenv(AppConfigFile))
+	viper, err := SetViperConfig(os.Getenv(AppConfigFile))
 	if err != nil {
 		return nil, err
 	}
-	httpServerPort := viper.GetInt("http_server_port")
+	httpServerPort := viper.GetInt(VarHttpServerPort)
 	if httpServerPort == 0 {
-		return nil, errors.New("http_server_port is not provided")
+		return nil, errors.New(fmt.Sprintf("%s is not provided", VarHttpServerPort))
 	}
 
 	prometheusMetricsPort := viper.GetInt("prometheus_metrics_port")
 	if prometheusMetricsPort == 0 {
-		return nil, errors.New("prometheus_metrics_port is not provided")
+		return nil, errors.New(fmt.Sprintf("%s is not provided", VarPrometheusMetricsPort))
 	}
 
 	return &CommonConfig{

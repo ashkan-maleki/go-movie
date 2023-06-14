@@ -2,32 +2,32 @@ package infra
 
 import (
 	"errors"
+	"fmt"
 	conf "github.com/mamalmaleki/go-movie/internal/config"
-	"github.com/spf13/viper"
 	"log"
 	"os"
 )
 
 type config struct {
-	ServiceDiscoveryUrl string `yaml:"service_discovery_url"`
-	JaegerUrl           string `yaml:"jaeger_url"`
+	ServiceDiscoveryUrl string `yaml:"SERVICE_DISCOVERY_URL"`
+	JaegerUrl           string `yaml:"JAEGER_URL"`
 }
 
 func newConfig() (*config, error) {
 	log.Println("beginning the creation of the base config object.")
-	err := conf.SetViperConfig(os.Getenv(conf.InfraConfigFile))
+	viper, err := conf.SetViperConfig(os.Getenv(conf.InfraConfigFile))
 	if err != nil {
 		return nil, err
 	}
 
-	serviceDiscoveryUrl := viper.GetString("service_discovery_url")
+	serviceDiscoveryUrl := viper.GetString(conf.VarServiceDiscoveryUrl)
 	if serviceDiscoveryUrl == "" {
-		return nil, errors.New("service_discovery_url is not provided")
+		return nil, errors.New(fmt.Sprintf("%s is not provided", conf.VarServiceDiscoveryUrl))
 	}
 
-	jaegerUrl := viper.GetString("jaeger_url")
+	jaegerUrl := viper.GetString(conf.VarJaegerUrl)
 	if jaegerUrl == "" {
-		return nil, errors.New("jaeger_url is not provided")
+		return nil, errors.New(fmt.Sprintf("%s is not provided", conf.VarJaegerUrl))
 	}
 
 	return &config{

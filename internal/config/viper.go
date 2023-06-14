@@ -6,24 +6,27 @@ import (
 	"os"
 )
 
-func SetViperConfig(filename string) error {
+func SetViperConfig(filename string) (*viper.Viper, error) {
+	vip := viper.New()
 	if filename == "" {
 		log.Println("filename is empty")
-		viper.AutomaticEnv()
+
+		vip.AutomaticEnv()
 	} else {
 		if _, err := os.Stat(filename); err != nil {
 			log.Printf("File does not exists\n")
-			return err
+			return nil, err
 		}
 		log.Println("filename exists")
-		viper.SetConfigType("yaml")
-		viper.SetConfigFile(filename)
+		vip.SetConfigType("yaml")
+		vip.SetConfigFile(filename)
+		err := vip.ReadInConfig()
+		if err != nil {
+			log.Printf("Reading config failed\n")
+			return nil, err
+		}
 
 	}
 
-	err := viper.ReadInConfig()
-	if err != nil {
-		return err
-	}
-	return nil
+	return vip, nil
 }
