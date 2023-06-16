@@ -11,9 +11,11 @@ vendor/
 
 # Exclude git history and configuration.
 .gitignore
+.git/
 
 # IDE files
 .idea/
+
 
 # docker files
 docker/

@@ -8,3 +8,8 @@ services:
 
   rating:
     image: rating
+
+networks:
+  go-movie:
+    name: go-movie
+    external: true

@@ -4,19 +4,29 @@ import (
 	"errors"
 	"fmt"
 	"github.com/spf13/viper"
-	"log"
+	"go.uber.org/zap"
 	"os"
-	"reflect"
 )
 
-// https://benchkram.de/blog/dev/ultimate-config-for-golang-apps
 
-func BindEnvAll(vip *viper.Viper, config any) error {
-	t := reflect.TypeOf(config)
-	for i := 0; i < t.NumField(); i++ {
-		field := t.Field(i)
-		tag := field.Tag.Get("mapstructure")
-		err := vip.BindEnv(tag)
+func SetupViper(logger *zap.Logger) error {
+	err := readAllConfFiles(logger, EnvVarFiles)
+	if err != nil && errors.Is(err, filePathIsEmpty){
+		viper.AutomaticEnv()
+		logger.Info("Read env variables")
+	} else if err != nil {
+		return err
+	}
+	err = validateAllEnvVar(logger)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func readAllConfFiles(logger *zap.Logger, filenames []string) error{
+	for i, filename := range filenames {
+		err := readInConf(logger, i, os.Getenv(filename))
 		if err != nil {
 			return err
 		}
@@ -24,34 +34,48 @@ func BindEnvAll(vip *viper.Viper, config any) error {
 	return nil
 }
 
-func Configure(filename string, config any) error {
-	vip := viper.New()
+func readInConf(logger *zap.Logger, i int ,filename string) error {
 	if filename == "" {
-		log.Println("filename is empty")
-		vip.AutomaticEnv()
-		if err := BindEnvAll(vip, config); err != nil {
+		return filePathIsEmpty
+	}
+	if _, err := os.Stat(filename); err != nil {
+		logger.Info("File does not exists")
+		return err
+	}
+	logger.Info("Filename exists", zap.String("filename:", filename))
+	viper.SetConfigType("yaml")
+	viper.SetConfigFile(filename)
+
+	if i == 0 {
+		if err := viper.ReadInConfig(); err != nil {
 			return err
 		}
 	} else {
-		if _, err := os.Stat(filename); err != nil {
-			log.Printf("File does not exists\n")
+		if err := viper.MergeInConfig(); err != nil {
 			return err
 		}
-		log.Println("filename exists")
-		vip.SetConfigType("yaml")
-		vip.SetConfigFile(filename)
-
-		if err := vip.ReadInConfig(); err != nil {
-			log.Printf("Reading config failed\n")
-			return err
-		}
-	}
-	if err := vip.Unmarshal(config); err != nil {
-		return err
-	}
-	log.Println(config)
-	if err := IsValid(config); err != nil {
-		return errors.New(fmt.Sprintf("Missing required attributes %v\n", err))
 	}
 	return nil
 }
+
+func validateAllEnvVar(logger *zap.Logger) error {
+	for _, envVar := range EnvVars {
+		envValue := viper.Get(envVar)
+		switch v := envValue.(type) {
+		case int:
+			if v == 0 {
+				return fmt.Errorf("%s is not provided", envVar)
+			}
+		case string:
+			if v == "" {
+				return fmt.Errorf("%s is not provided", envVar)
+			}
+		default:
+			return fmt.Errorf("%s is not provided", envVar)
+		}
+	}
+	logger.Info("All env var are validated")
+	return nil
+}
+
+

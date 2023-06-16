@@ -6,7 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/mamalmaleki/go-movie/gen"
-	appPkg "github.com/mamalmaleki/go-movie/metadata/cmd/app"
+	"github.com/mamalmaleki/go-movie/internal/config"
 	"github.com/mamalmaleki/go-movie/metadata/internal/controller/metadata"
 	"github.com/mamalmaleki/go-movie/pkg/tracing"
 	"github.com/uber-go/tally"
@@ -34,16 +34,32 @@ import (
 
 const serviceName = "metadata"
 
+func panicForEnvVar(envVar string) {
+	panic(fmt.Errorf("%s is not provided", envVar))
+}
+
 func main() {
-	logger, _ := zap.NewProduction()
+
+	zapConfig := zap.NewProductionConfig()
+	zapConfig.OutputPaths = []string{"stdout"}
+	zapConfig.ErrorOutputPaths = []string{"stdout"}
+
+	logger, err := zapConfig.Build()
+	if err != nil {
+		panic(err)
+	}
+	//logger, _ := zap.NewProduction()
 	defer logger.Sync()
 
-	app, err := appPkg.New()
-	if err != nil {
-		panic(fmt.Errorf("app creation just failed: %w", err))
-	}
+	logger = logger.With(zap.String("serviceName", serviceName))
+	logger.Info("Started the service")
 
-	logger.Info("Started the service", zap.String("serviceName", serviceName))
+	err = config.SetupViper(logger)
+	if err != nil {
+		logger.Error("Read env variables failed", zap.Error(err))
+		panic(fmt.Errorf("reading env vars failed: %w", err))
+	}
+	logger.Info("Reading env var completed")
 
 	simulateCPULoad := flag.Bool("simulatecpuload", false, "simulate CPU load for profiling")
 	flag.Parse()
@@ -57,17 +73,17 @@ func main() {
 		}
 	}()
 
-	port := app.Config.HttpServerPort
-	//flag.IntVar(&port, "port", 8081, "API handler port")
-	//flag.Parse()
+	port := config.HttpServerPort()
+
 	log.Printf("Starting the movie metadata service on port %d", port)
-	registry, err := consul.NewRegistry(app.Infra.Config.ServiceDiscoveryUrl)
+
+	registry, err := consul.NewRegistry(config.ServiceDiscoveryUrl())
 	if err != nil {
 		panic(err)
 	}
 	ctx := context.Background()
 
-	tp, err := tracing.NewJaegerProvider(app.Infra.Config.JaegerUrl, serviceName)
+	tp, err := tracing.NewJaegerProvider(config.JaegerUrl(), serviceName)
 	if err != nil {
 		log.Fatal("Failed to initialize Jaeger provider", zap.Error(err))
 	}
@@ -89,7 +105,7 @@ func main() {
 
 	go func() {
 		if err := http.ListenAndServe(fmt.Sprintf(":%d",
-			app.Config.PrometheusMetricsPort), nil); err != nil {
+			config.PrometheusMetricsPort()), nil); err != nil {
 			logger.Fatal("Failed to start the metrics handler", zap.Error(err))
 		}
 	}()

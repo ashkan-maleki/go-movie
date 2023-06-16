@@ -1,7 +1,5 @@
-// TODO: local and docker compose environment variables
+
 // TODO: pass version variable from makefile to docker compose.
-// TODO: viper for docker variables
-// TODO: logging for app creation
 // TODO: docker compose dependency on each other in different files.
 // # Second Phase
 // TODO: ELK

@@ -28,3 +28,7 @@ volumes:
   db:
     driver: local
   prometheus_data:
+
+networks:
+  go-movie:
+    name: go-movie

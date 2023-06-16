@@ -2,14 +2,25 @@ package config
 
 import (
 	"errors"
-	"fmt"
-	"github.com/go-playground/validator/v10"
+	"github.com/spf13/viper"
 )
 
-func IsValid(config any) error {
-	validate := validator.New()
-	if err := validate.Struct(config); err != nil {
-		return errors.New(fmt.Sprintf("Missing required attributes %v\n", err))
-	}
-	return nil
+var filePathIsEmpty = errors.New("the specified yaml file is empty")
+
+func JaegerUrl() string {
+	return viper.GetString(VarJaegerUrl)
 }
+
+func ServiceDiscoveryUrl() string {
+	return viper.GetString(VarServiceDiscoveryUrl)
+}
+
+func HttpServerPort() int {
+	return viper.GetInt(VarHttpServerPort)
+}
+
+func PrometheusMetricsPort() int {
+	return viper.GetInt(VarPrometheusMetricsPort)
+}
+
+
