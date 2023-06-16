@@ -24,10 +24,20 @@ services:
   grafana:
     image: grafana/grafana-oss
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
+
 volumes:
   db:
     driver: local
   prometheus_data:
+  elasticsearch-data:
+    driver: local
+  kibana-data:
+    driver: local
 
 networks:
   go-movie:
