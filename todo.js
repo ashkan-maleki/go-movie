@@ -1,12 +1,10 @@
-
-// TODO: pass version variable from makefile to docker compose.
-// TODO: docker compose dependency on each other in different files.
+// 1)
+// TODO: write a beautiful readme, and update resume.
 // # Second Phase
 // TODO: ELK
 // It means environment variables should be defined
 
-// TODO: write a beautiful readme
-// TODO: put git special files into docker ignore
+
 // TODO: fix or ignore prometheus email
 // and add them to git ignore.
 // # Third Phase

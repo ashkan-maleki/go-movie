@@ -1,5 +1,14 @@
 # go-movie
-microservices based movie catalog developed using golang
+microservices based movie catalog developed using golang.<br/>
+1) Metadata service: It stores and retrieves movie metadata<br/>
+gRPC, MySQL, Go
+2) Rating service: It stores and retrieves movie rating <br/>
+gRPC, MySQL, Go
+3) Movie service: It is an API Gateway. It sits between Client and other services.<br/>
+gRPC, MySQL, Go
+
+# requirements:
+Golang, Docker, Docker compose, Makefile, and zap-pretty
 
 
 ## docker compose commands:
