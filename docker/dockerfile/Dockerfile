@@ -11,7 +11,8 @@ COPY go.* ./
 RUN go mod download
 
 # Copy local code to the container image.
-COPY .. ./
+COPY ./ ./
+
 
 # Build the binary.
 RUN go build -ldflags="-s -w" -v -o service ./${service}/cmd/
@@ -25,7 +26,7 @@ ARG service
 
 # Copy the binary to the production image from the builder stage.
 COPY --from=builder /movie/service /movie/service
-COPY ../${service}/configs/base.yaml /movie/base.yaml
+#COPY ../${service}/configs/base.yaml /movie/base.yaml
 
 CMD [ "/movie/service" ]
 #CMD ["ls", "/movie/service"]

@@ -3,8 +3,8 @@ package http
 import (
 	"encoding/json"
 	"errors"
-	"github.com/mamalmaleki/go_movie/metadata/internal/controller/metadata"
-	"github.com/mamalmaleki/go_movie/metadata/internal/repository"
+	"github.com/mamalmaleki/go-movie/metadata/internal/controller/metadata"
+	"github.com/mamalmaleki/go-movie/metadata/internal/repository"
 	"log"
 	"net/http"
 )

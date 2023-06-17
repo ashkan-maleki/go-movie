@@ -5,31 +5,28 @@ import (
 	"crypto/md5"
 	"flag"
 	"fmt"
-	"github.com/mamalmaleki/go_movie/gen"
-	"github.com/mamalmaleki/go_movie/metadata/internal/controller/metadata"
-	"github.com/mamalmaleki/go_movie/pkg/tracing"
+	"github.com/mamalmaleki/go-movie/gen"
+	"github.com/mamalmaleki/go-movie/internal/config"
+	"github.com/mamalmaleki/go-movie/metadata/internal/controller/metadata"
+	"github.com/mamalmaleki/go-movie/pkg/tracing"
 	"github.com/uber-go/tally"
 	"github.com/uber-go/tally/prometheus"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/propagation"
-	"gopkg.in/yaml.v3"
 	"math/rand"
 	"net/http"
 	_ "net/http/pprof"
-	"os"
-	"path/filepath"
-
-	//"github.com/mamalmaleki/go_movie/metadata/internal/repository/memory"
+	//"github.com/mamalmaleki/go-movie/metadata/internal/repository/memory"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"net"
 
-	//httpHandler "github.com/mamalmaleki/go_movie/metadata/internal/handler/http"
-	grpcHandler "github.com/mamalmaleki/go_movie/metadata/internal/handler/grpc"
-	"github.com/mamalmaleki/go_movie/metadata/internal/repository/mysql"
-	"github.com/mamalmaleki/go_movie/pkg/discovery"
-	"github.com/mamalmaleki/go_movie/pkg/discovery/consul"
+	//httpHandler "github.com/mamalmaleki/go-movie/metadata/internal/handler/http"
+	grpcHandler "github.com/mamalmaleki/go-movie/metadata/internal/handler/grpc"
+	"github.com/mamalmaleki/go-movie/metadata/internal/repository/mysql"
+	"github.com/mamalmaleki/go-movie/pkg/discovery"
+	"github.com/mamalmaleki/go-movie/pkg/discovery/consul"
 	"go.uber.org/zap"
 	"log"
 	"time"
@@ -37,11 +34,32 @@ import (
 
 const serviceName = "metadata"
 
+func panicForEnvVar(envVar string) {
+	panic(fmt.Errorf("%s is not provided", envVar))
+}
+
 func main() {
-	logger, _ := zap.NewProduction()
+
+	zapConfig := zap.NewProductionConfig()
+	zapConfig.OutputPaths = []string{"stdout"}
+	zapConfig.ErrorOutputPaths = []string{"stdout"}
+
+	logger, err := zapConfig.Build()
+	if err != nil {
+		panic(err)
+	}
+	//logger, _ := zap.NewProduction()
 	defer logger.Sync()
 
-	logger.Info("Started the service", zap.String("serviceName", serviceName))
+	logger = logger.With(zap.String("serviceName", serviceName))
+	logger.Info("Started the service")
+
+	err = config.SetupViper(logger)
+	if err != nil {
+		logger.Error("Read env variables failed", zap.Error(err))
+		panic(fmt.Errorf("reading env vars failed: %w", err))
+	}
+	logger.Info("Reading env var completed")
 
 	simulateCPULoad := flag.Bool("simulatecpuload", false, "simulate CPU load for profiling")
 	flag.Parse()
@@ -55,38 +73,17 @@ func main() {
 		}
 	}()
 
-	filename := os.Getenv("CONFIG_FILE")
-	if filename == "" {
-		var err error
-		filename, err = filepath.Abs("../metadata/configs/base.yaml")
-		if err != nil {
-			panic(err)
-		}
-	}
-	f, err := os.Open(filename)
-	if err != nil {
-		panic(err)
-	}
-	defer f.Close()
-	var cfg config
-	if err := yaml.NewDecoder(f).Decode(&cfg); err != nil {
-		panic(err)
-	}
-	port := cfg.API.Port
-	//flag.IntVar(&port, "port", 8081, "API handler port")
-	//flag.Parse()
+	port := config.HttpServerPort()
+
 	log.Printf("Starting the movie metadata service on port %d", port)
-	serviceDiscoverUrl := os.Getenv("SERVICE_DISCOVERY_URL")
-	if serviceDiscoverUrl == "" {
-		serviceDiscoverUrl = "localhost:8500"
-	}
-	registry, err := consul.NewRegistry(serviceDiscoverUrl)
+
+	registry, err := consul.NewRegistry(config.ServiceDiscoveryUrl())
 	if err != nil {
 		panic(err)
 	}
 	ctx := context.Background()
 
-	tp, err := tracing.NewJaegerProvider(cfg.Jaeger.URL, serviceName)
+	tp, err := tracing.NewJaegerProvider(config.JaegerUrl(), serviceName)
 	if err != nil {
 		log.Fatal("Failed to initialize Jaeger provider", zap.Error(err))
 	}
@@ -108,7 +105,7 @@ func main() {
 
 	go func() {
 		if err := http.ListenAndServe(fmt.Sprintf(":%d",
-			cfg.Prometheus.MetricsPort), nil); err != nil {
+			config.PrometheusMetricsPort()), nil); err != nil {
 			logger.Fatal("Failed to start the metrics handler", zap.Error(err))
 		}
 	}()

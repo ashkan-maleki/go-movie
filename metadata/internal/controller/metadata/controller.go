@@ -3,8 +3,8 @@ package metadata
 import (
 	"context"
 	"errors"
-	"github.com/mamalmaleki/go_movie/metadata/internal/repository"
-	"github.com/mamalmaleki/go_movie/metadata/pkg/model"
+	"github.com/mamalmaleki/go-movie/metadata/internal/repository"
+	"github.com/mamalmaleki/go-movie/metadata/pkg/model"
 )
 
 // ErrNotFound is returned when a requested record is not found.
