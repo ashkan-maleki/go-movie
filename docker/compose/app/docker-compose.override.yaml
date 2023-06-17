@@ -1,0 +1,80 @@
+version: '3.7'
+
+services:
+  metadata:
+    image: ashkanmaleki/metadata:${METADATA_VERSION}
+    container_name: metadata
+    hostname: metadata
+    expose:
+      - '8081'
+    environment:
+      SERVICE_DISCOVERY_URL: "consul-agent:8500"
+      HTTP_SERVER_PORT: 8081
+      PROMETHEUS_METRICS_PORT: 8091
+      JAEGER_URL: jaeger:14268/api/traces"
+    depends_on:
+      db:
+        condition: service_started
+      agent:
+        condition: service_started
+      zoo1:
+        condition: service_started
+      kafka1:
+        condition: service_started
+    networks:
+      - go-movie
+
+
+
+  movie:
+    container_name: movie
+    hostname: movie
+    build:
+      context: .
+      #      dockerfile: ../../dockerfile/Dockerfile
+      dockerfile: ../../dockerfile/Dockerfile-test
+      args:
+        service: movie
+    expose:
+      - '8083'
+    environment:
+      ENVIRONMENT: development
+      CONFIG_FILE: "movie/base.yaml"
+      SERVICE_DISCOVERY_URL: "consul-agent:8500"
+    depends_on:
+      - db
+      - agent
+      - zoo1
+      - kafka1
+    networks:
+      - go-movie
+  #    command: [ "/movie/service" ]
+
+  rating:
+    container_name: rating
+    hostname: rating
+    build:
+      context: .
+      #      dockerfile: ../../dockerfile/Dockerfile-csg-enabled
+      dockerfile: ../../dockerfile/Dockerfile-test
+      args:
+        service: rating
+    expose:
+      - '8082'
+    environment:
+      ENVIRONMENT: development
+      CONFIG_FILE: "movie/base.yaml"
+      SERVICE_DISCOVERY_URL: "consul-agent:8500"
+      KAFKA_ADDRESS: "kafka1:19092"
+    depends_on:
+      - db
+      - agent
+      - zoo1
+      - kafka1
+    networks:
+      - go-movie
+#    command: [ "/movie/service" ]
+
+
+# https://stackoverflow.com/questions/48092592/how-to-start-service-only-when-other-service-had-completed
+# https://github.com/docker/compose/issues/8154

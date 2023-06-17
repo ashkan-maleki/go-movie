@@ -3,7 +3,7 @@ package memory
 import (
 	"context"
 	"errors"
-	"github.com/mamalmaleki/go_movie/pkg/discovery"
+	"github.com/mamalmaleki/go-movie/pkg/discovery"
 	"sync"
 	"time"
 )

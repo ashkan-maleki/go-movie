@@ -1,0 +1,47 @@
+version: '3.7'
+services:
+  agent:
+    image: consul:latest
+
+  zoo1:
+    image: confluentinc/cp-zookeeper:latest
+
+  kafka1:
+    image: confluentinc/cp-kafka:latest
+
+  db:
+    image: mysql:latest
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+
+  prometheus:
+    image: prom/prometheus
+
+  alertmanager:
+    image: prom/alertmanager
+
+  grafana:
+    image: grafana/grafana-oss
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:latest
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:latest
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:latest
+
+volumes:
+  db:
+    driver: local
+  prometheus_data:
+  elasticsearch-data:
+    driver: local
+  kibana-data:
+    driver: local
+
+networks:
+  go-movie:
+    name: go-movie

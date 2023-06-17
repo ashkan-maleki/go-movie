@@ -3,9 +3,9 @@ package grpc
 import (
 	"context"
 	"errors"
-	"github.com/mamalmaleki/go_movie/gen"
-	"github.com/mamalmaleki/go_movie/metadata/pkg/model"
-	"github.com/mamalmaleki/go_movie/movie/internal/controller/movie"
+	"github.com/mamalmaleki/go-movie/gen"
+	"github.com/mamalmaleki/go-movie/metadata/pkg/model"
+	"github.com/mamalmaleki/go-movie/movie/internal/controller/movie"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

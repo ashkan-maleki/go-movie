@@ -5,9 +5,9 @@ import (
 	"errors"
 	"github.com/golang/mock/gomock"
 	"github.com/magiconair/properties/assert"
-	gen "github.com/mamalmaleki/go_movie/gen/mock/metadata/repository"
-	"github.com/mamalmaleki/go_movie/metadata/internal/repository"
-	"github.com/mamalmaleki/go_movie/metadata/pkg/model"
+	gen "github.com/mamalmaleki/go-movie/gen/mock/metadata/repository"
+	"github.com/mamalmaleki/go-movie/metadata/internal/repository"
+	"github.com/mamalmaleki/go-movie/metadata/pkg/model"
 	"testing"
 )
 

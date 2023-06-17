@@ -3,7 +3,7 @@ package http
 import (
 	"encoding/json"
 	"errors"
-	"github.com/mamalmaleki/go_movie/movie/internal/controller/movie"
+	"github.com/mamalmaleki/go-movie/movie/internal/controller/movie"
 	"log"
 	"net/http"
 )

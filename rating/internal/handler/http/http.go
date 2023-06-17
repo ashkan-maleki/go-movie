@@ -3,8 +3,8 @@ package http
 import (
 	"encoding/json"
 	"errors"
-	"github.com/mamalmaleki/go_movie/rating/internal/controller/rating"
-	"github.com/mamalmaleki/go_movie/rating/pkg/model"
+	"github.com/mamalmaleki/go-movie/rating/internal/controller/rating"
+	"github.com/mamalmaleki/go-movie/rating/pkg/model"
 	"log"
 	"net/http"
 	"strconv"
