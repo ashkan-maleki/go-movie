@@ -3,8 +3,8 @@ package rating
 import (
 	"context"
 	"errors"
-	"github.com/mamalmaleki/go_movie/rating/internal/repository"
-	"github.com/mamalmaleki/go_movie/rating/pkg/model"
+	"github.com/mamalmaleki/go-movie/rating/internal/repository"
+	"github.com/mamalmaleki/go-movie/rating/pkg/model"
 )
 
 // ErrNotFound is returned when no ratings are found for a record.

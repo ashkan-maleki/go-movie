@@ -4,8 +4,8 @@ import (
 	"context"
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/mamalmaleki/go_movie/rating/internal/repository"
-	"github.com/mamalmaleki/go_movie/rating/pkg/model"
+	"github.com/mamalmaleki/go-movie/rating/internal/repository"
+	"github.com/mamalmaleki/go-movie/rating/pkg/model"
 )
 
 // Repository defines a MySQL-based rating repository.

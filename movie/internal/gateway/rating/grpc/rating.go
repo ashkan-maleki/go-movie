@@ -2,11 +2,11 @@ package grpc
 
 import (
 	"context"
-	"github.com/mamalmaleki/go_movie/gen"
-	"github.com/mamalmaleki/go_movie/internal/grpcutil"
-	"github.com/mamalmaleki/go_movie/movie/internal/gateway"
-	"github.com/mamalmaleki/go_movie/pkg/discovery"
-	"github.com/mamalmaleki/go_movie/rating/pkg/model"
+	"github.com/mamalmaleki/go-movie/gen"
+	"github.com/mamalmaleki/go-movie/internal/grpcutil"
+	"github.com/mamalmaleki/go-movie/movie/internal/gateway"
+	"github.com/mamalmaleki/go-movie/pkg/discovery"
+	"github.com/mamalmaleki/go-movie/rating/pkg/model"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

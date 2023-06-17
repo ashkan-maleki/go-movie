@@ -1,24 +1,18 @@
-# go_movie
-microservices based movie catalog developed using golang
+# go-movie
+microservices based movie catalog developed using golang.<br/>
+1) Metadata service: It stores and retrieves movie metadata<br/>
+gRPC, MySQL, Go
+2) Rating service: It stores and retrieves movie rating <br/>
+gRPC, MySQL, Go
+3) Movie service: It is an API Gateway. It sits between Client and other services.<br/>
+gRPC, MySQL, Go
 
+# requirements:
+Golang, Docker, Docker compose, Makefile, and zap-pretty
 
-## docker compose commands:
-
-docker compose -f docker-compose.yml -f docker-compose.override.yml up -d
-
-docker compose -f docker-compose.yml -f docker-compose.override.yml up -d --scale recipe_worker=5
-
-docker-compose -f docker-compose.yml -f docker-compose.override.yml down
-
-docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d --build
-
-docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d --build  --scale recipe_worker=5
-
-## docker - mysql commands:
-
-docker exec -i db mysql movie -h localhost -P 3306 --protocol=tcp -uroot -pmauFJcuf5dhRMQrjj < schema/schema.sql
-
-docker exec -i db mysql movie -h localhost -P 3306 --protocol=tcp -uroot -pmauFJcuf5dhRMQrjj -e "SHOW tables"
+# How to run:
+1) make docker-build<br/>
+2) make compose-start<br/>
 
 ## grpc url commands:
 
@@ -33,10 +27,10 @@ go tool pprof http://localhost:6060/debug/pprof/profile?seconds=5
 
 ## links:
 
-Prometheus Dashboard: http://localhost:9090/
-Alert Manager UI: http://localhost:9093
-Portainer: http://localhost:9000/
-Grafana: http://localhost:3000
+Prometheus Dashboard: http://localhost:9090/ <br/>
+Alert Manager UI: http://localhost:9093 <br/>
+Portainer: http://localhost:9000/ <br/>
+Grafana: http://localhost:3000 <br/>
 
 
 

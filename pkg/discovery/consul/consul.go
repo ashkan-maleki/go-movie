@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	consul "github.com/hashicorp/consul/api"
-	"github.com/mamalmaleki/go_movie/pkg/discovery"
+	"github.com/mamalmaleki/go-movie/pkg/discovery"
 	"strconv"
 	"strings"
 )
