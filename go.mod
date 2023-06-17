@@ -9,7 +9,6 @@ require (
 	github.com/golang/mock v1.6.0
 	github.com/google/go-cmp v0.5.9
 	github.com/hashicorp/consul/api v1.21.0
-	github.com/logrusorgru/aurora v2.0.3+incompatible
 	github.com/logrusorgru/aurora/v4 v4.0.0
 	github.com/magiconair/properties v1.8.7
 	github.com/mamalmaleki/go_movie v0.0.0-20230612145300-2435385d0723

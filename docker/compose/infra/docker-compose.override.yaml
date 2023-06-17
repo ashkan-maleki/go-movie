@@ -132,6 +132,8 @@ services:
       memlock:
         soft: -1
         hard: -1
+    networks:
+      - go-movie
 
   kibana:
     depends_on:
@@ -144,4 +146,22 @@ services:
     restart: always
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    networks:
+      - go-movie
+
+  logstash:
+    volumes:
+      # - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+      - /var/log/GDPR/myapplication:/var/log/GDPR/myapplication:ro
+    ports:
+      - "5000:5000"
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    networks:
+      - go-movie
+    depends_on:
+      - elasticsearch
+    links:
+      - elasticsearch
 
